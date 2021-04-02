@@ -1,4 +1,4 @@
-# import seeed_mlx9064x
+import seeed_mlx9064x
 import time
 import numpy as np
 import matplotlib.pyplot as plt
