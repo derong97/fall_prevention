@@ -30,6 +30,7 @@ def take_ten_frames(mlx, frame):
 
 
 def save_ten_frames(frames, save_filepath):
+    print(frames)
     current_files= os.listdir(save_filepath)
 
     if len(current_files) == 0:
