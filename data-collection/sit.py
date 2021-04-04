@@ -16,13 +16,13 @@ def take_ten_frames(mlx, frame):
             mlx.getFrame(frame)
         except ValueError:
             continue
-        print(np.shape(frame))
-        print(np.shape(frames))
         print(frame)
         frame = np.array(frame)
-        # frame_formatted = np.reshape(frame,(24, 32)) 
-        frames = np.vstack((frames, frame))
-        
+        if i == 0:
+            frames = frame
+        else:
+            # frame_formatted = np.reshape(frame,(24, 32)) 
+            frames = np.vstack((frames, frame))
         print("frame", (i + 1), " captured")
         
     

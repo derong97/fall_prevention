@@ -14,6 +14,11 @@ arr3 = np.append(arr1, arr2)
 arr4 = np.vstack((arr1, arr2)) 
 arr5 = np.vstack((arr4, arr2))
 
+print (np.shape(arr1))
+print(np.shape(arr4))
+print(np.shape(arr5))
+
+
 print (arr3) 
 
 print (arr4) 
