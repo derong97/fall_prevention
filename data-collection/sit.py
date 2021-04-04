@@ -43,8 +43,7 @@ def save_ten_frames(frames, save_filepath):
         np.save(save_filepath, frames)
 
 def main():
-    frames = np.array([])
-    
+
     if CHIP_TYPE == 'MLX90641':
         mlx = seeed_mlx9064x.grove_mxl90641()
         frame = [0] * 192
@@ -54,7 +53,7 @@ def main():
     
     while True:
         try:
-            frames = take_ten_frames(mlx, frames)
+            frames = take_ten_frames(mlx, frame)
             save_ten_frames(frames, save_filepath)
 
         except KeyboardInterrupt:
