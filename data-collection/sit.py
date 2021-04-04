@@ -27,18 +27,18 @@ def take_ten_frames(mlx, frame):
 
 def save_ten_frames(frames, save_filepath):
     current_files= os.listdir(save_filepath)
-    retrieve_all_filepath = save_filepath + "*"
+
     if len(current_files) == 0:
         save_filepath = save_filepath + "sit_001"
         np.save(save_filepath, frames)
     else: #get number of files 
         save_index = len(current_files) 
         if save_index < 10: 
-            save_filepath = save_filepath + "sit_00" + str(save_index)
+            save_filepath = save_filepath + "sit_00" + str(save_index+1)
         elif save_filepath < 100: 
-            save_filepath = save_filepath + "sit_0" + str(save_index)
+            save_filepath = save_filepath + "sit_0" + str(save_index+1)
         else: 
-            save_filepath = save_filepath + "sit_" + str(save_index)
+            save_filepath = save_filepath + "sit_" + str(save_index+1)
         
         np.save(save_filepath, frames)
     
@@ -63,3 +63,4 @@ def main():
             
 if __name__  == '__main__':
     main()
+
