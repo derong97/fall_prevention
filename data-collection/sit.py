@@ -19,7 +19,7 @@ def take_ten_frames(mlx, frame):
         print(frame)
         frame = np.array(frame)
         frame_formatted = np.reshape(frame,(24, 32)) 
-        frames = np.vstack(frames, frame_formatted)
+        frames = np.vstack((frames, frame_formatted))
         print("frame", (i + 1), " captured")
     
     return frames 
