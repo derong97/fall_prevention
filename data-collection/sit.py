@@ -7,6 +7,7 @@ import glob
 
 CHIP_TYPE = 'MLX90640'
 save_filepath = "/Users/glendawee/Desktop/data-collection/sit"
+frames = np.array([])
 
 def take_ten_frames(mlx, frame):
     frames = np.array([])
