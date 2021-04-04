@@ -6,7 +6,7 @@ import glob
 
 
 CHIP_TYPE = 'MLX90640'
-save_filepath = "/Users/glendawee/Desktop/data-collection/sit"
+save_filepath = "/home/pi/Desktop/posture-data/sit"
 
 def take_ten_frames(mlx, frame):
     frames = np.array([])
@@ -20,7 +20,7 @@ def take_ten_frames(mlx, frame):
         frame = np.array(frame)
         frame_formatted = np.reshape(frame,(24, 32)) 
         frames = np.append(frames, frame_formatted)
-        print("frame", i, " captured")
+        print("frame", (i + 1), " captured")
     
     return frames 
 
@@ -41,6 +41,8 @@ def save_ten_frames(frames, save_filepath):
             save_filepath = save_filepath + "sit_" + str(save_index)
         
         np.save(save_filepath, frames)
+    
+    print (save_filepath, "saved")
 
 def main():
 
