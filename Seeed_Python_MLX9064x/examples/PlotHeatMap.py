@@ -3,23 +3,10 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 
+#code only outputs first temperature reading + matplotlib plot
+
 
 CHIP_TYPE = 'MLX90640'
-
-def format_frame(frame):
-    formatted_frame = np.zeros((24,32))
-    column = 0
-    row = 0 #24 rows total 
-    for i in frame: #i is the temperature 
-        if column < 31: #still along the same row 
-            formatted_frame[row, column] = i
-            column += 1 
-        elif column == 31: #reset row after adding entry
-            formatted_frame[row, column] = i
-            row += 1
-            column = 0
-
-    return formatted_frame
 
 def main():
     if CHIP_TYPE == 'MLX90641':
@@ -36,7 +23,8 @@ def main():
         except ValueError:
             continue
         print(frame)
-        frame_formatted = format_frame(frame)
+        frame = np.array(frame)
+        frame_formatted = np.reshape(frame,(24, 32)) 
         plt.imshow(frame_formatted, cmap='hot', interpolation='nearest')
         plt.show()
         end = time.time()
