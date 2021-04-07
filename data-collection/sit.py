@@ -40,7 +40,7 @@ def save_ten_frames(frames, save_filepath):
         save_index = len(current_files) 
         if save_index < 9: 
             save_filepath = save_filepath + "sit_00" + str(save_index+1)
-        elif save_filepath < 99: 
+        elif save_index < 99: 
             save_filepath = save_filepath + "sit_0" + str(save_index+1)
         else: 
             save_filepath = save_filepath + "sit_" + str(save_index+1)

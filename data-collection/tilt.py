@@ -6,7 +6,7 @@ import glob
 
 
 CHIP_TYPE = 'MLX90640'
-save_filepath = "/home/pi/Desktop/posture-data/stand/"
+save_filepath = "/home/pi/Desktop/posture-data/tilt/"
 
 def take_ten_frames(mlx, frame):
     frames = np.array([])
@@ -34,16 +34,16 @@ def save_ten_frames(frames, save_filepath):
     current_files= os.listdir(save_filepath)
 
     if len(current_files) == 0:
-        save_filepath = save_filepath + "stand_001"
+        save_filepath = save_filepath + "tilt_001"
         np.save(save_filepath, frames)
     else: #get number of files 
         save_index = len(current_files) 
         if save_index < 9: 
-            save_filepath = save_filepath + "stand_00" + str(save_index+1)
+            save_filepath = save_filepath + "tilt_00" + str(save_index+1)
         elif save_index < 99: 
-            save_filepath = save_filepath + "stand_0" + str(save_index+1)
+            save_filepath = save_filepath + "tilt_0" + str(save_index+1)
         else: 
-            save_filepath = save_filepath + "stand_" + str(save_index+1)
+            save_filepath = save_filepath + "tilt_" + str(save_index+1)
         
         np.save(save_filepath, frames)
     
