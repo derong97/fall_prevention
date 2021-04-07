@@ -57,7 +57,7 @@ def main():
     elif CHIP_TYPE == 'MLX90640':
         mlx = seeed_mlx9064x.grove_mxl90640()
         frame = [0] * 768       
-    
+    mlx.refresh_rate = seeed_mlx9064x.RefreshRate.REFRESH_8_HZ  # The fastest for raspberry 4 
     while True:
         try:
             frames = take_ten_frames(mlx, frame)
