@@ -122,15 +122,16 @@ class MLX90640_Dataset(Dataset):
         """
         arr = []
         for frame in frames:
+            frame = np.float32(frame)
             im = frame.reshape(self.frame_size)
+            im = cv2.resize(im, tuple(i*3 for i in self.frame_size))
             
             # only apply data augmentation to training samples
             if self.group == 'train':
                 pass
             
             arr.append(im)
-            
-        # normalize
+        
         arr = np.array(arr) / 255
         
         return arr
