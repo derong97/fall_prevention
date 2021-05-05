@@ -30,17 +30,6 @@ if __name__  == '__main__':
     save_index = len(os.listdir(root_dir))
     action = os.path.basename(os.path.normpath(root_dir))
     
-    frame = [0] * 768
-    while True:
-        try:
-            save_filepath = root_dir + "/{}_".format(action) + str(save_index+1)
-            np.save(save_filepath, frame)
-            print(save_filepath, "saved")
-            save_index += 1
-
-        except KeyboardInterrupt:
-            break
-    
     # MLX90640
     mlx = seeed_mlx9064x.grove_mxl90640()
     frame = [0] * 768
