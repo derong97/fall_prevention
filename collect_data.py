@@ -23,7 +23,7 @@ def take_n_frames(mlx, frame, count=10):
 if __name__  == '__main__':
     # Parsing the argument
     if len(sys.argv) < 2:
-        print('You need to specify the path to be saved. For example: python collect_data.py data/sit')
+        print('You need to specify the path to be saved. For example: python collect_data.py posture-data/sit')
         sys.exit()
         
     root_dir = sys.argv[1]
