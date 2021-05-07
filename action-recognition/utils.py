@@ -1,42 +1,9 @@
-from dataset import *
 import matplotlib.pyplot as plt
 import torch.nn as nn
+import torch
 import datetime
 import cv2
-
-def plot_class_distribution():
-    """
-    Plots bar graphs of the class distributions of train, val and test set
-    over the 3 classes: sit, stand and tilt.
-
-    There is 1 bar graph plotted:
-    - Number of images per class for each dataset (side by side)
-    """
-
-    # Plot number of images per class for each dataset
-    train_ds = MLX90640_Dataset('train')
-    val_ds = MLX90640_Dataset('val')
-    test_ds = MLX90640_Dataset('test')
-
-    labels = train_ds.dataset_numbers.keys()
-    train_num = train_ds.dataset_numbers.values()
-    val_num = val_ds.dataset_numbers.values()
-    test_num = test_ds.dataset_numbers.values()
-    
-    x = np.arange(len(labels))
-    width = 0.2
-
-    fig, ax = plt.subplots()
-    ax.bar(x - width, train_num, width, label='Train')
-    ax.bar(x, val_num, width, label='Validation')
-    ax.bar(x + width, test_num, width, label='Test')
-
-    ax.set_title('No. of videos per class')
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels)
-    ax.legend()
-        
-    plt.show()
+import numpy as np
 
 def train(model, device, train_loader, val_loader, optimizer, epoch):
     """
@@ -55,12 +22,14 @@ def train(model, device, train_loader, val_loader, optimizer, epoch):
         loss.backward()
         optimizer.step()
 
-    train_loss, train_acc, _ = evaluate(model, device, train_loader)
+    train_loss, train_cm = evaluate(model, device, train_loader)
+    train_acc = get_accuracy(train_cm)
     print('Train Epoch: {} @ {} \nTrain Loss: {:.4f} - Train Accuracy: {:.1f}%'.format(
-        epoch, datetime.datetime.now().time(), train_loss, train_acc))
+        epoch, datetime.datetime.now().time(), train_loss, train_acc * 100))
 
-    val_loss, val_acc, _ = evaluate(model, device, val_loader)
-    print("Val Loss: {:.4f} - Val Accuracy: {:.1f}%".format(val_loss, val_acc))
+    val_loss, val_cm = evaluate(model, device, val_loader)
+    val_acc = get_accuracy(val_cm)
+    print("Val Loss: {:.4f} - Val Accuracy: {:.1f}%".format(val_loss, val_acc * 100))
 
     return train_loss, train_acc, val_loss, val_acc
 
@@ -70,7 +39,6 @@ def evaluate(model, device, data_loader):
     """
     model.eval()
     loss = 0
-    correct = 0
     confusion_matrix = torch.zeros(3, 3) # 3 classes
     with torch.no_grad():
         for data, target in data_loader:
@@ -80,14 +48,13 @@ def evaluate(model, device, data_loader):
             criterion = nn.CrossEntropyLoss()
             loss += criterion(output, target)
             pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
-            correct += pred.eq(target.view_as(pred)).sum().item()
             
             for t, p in zip(target.view(-1), pred.view(-1)):
                 confusion_matrix[t.long(), p.long()] += 1
 
     loss /= len(data_loader)
-    acc = 100. * correct / len(data_loader.dataset)
-    return loss, acc, confusion_matrix
+        
+    return loss, confusion_matrix
 
 def predict(model, video_path):
     """
@@ -127,8 +94,16 @@ def load_model(model, model_path):
     model.load_state_dict(torch.load(model_path))
     return model
 
+def get_accuracy(cm):
+    """
+    Calculates the accuracy score from confusion matrix
+    """
+    return torch.diag(cm).sum() / cm.sum()
+
 def display_frames(arr):
-    
+    """
+    Prints 10 frames in 2x5 grid
+    """
     fig, ax = plt.subplots(nrows=2, ncols=5, figsize=(10,5))
     for i in range(arr.shape[0]):
         frame = arr[i]

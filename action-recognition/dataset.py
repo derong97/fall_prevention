@@ -1,3 +1,4 @@
+from utils import display_frames
 import torch
 from torch.utils.data import Dataset
 import matplotlib.pyplot as plt
@@ -105,16 +106,7 @@ class MLX90640_Dataset(Dataset):
 
         # open video
         arr = self.open_video(class_val, index_val)
-
-        # display
-        for i in range(arr.shape[0]):
-            frame = arr[i]
-            
-            fig, ax = plt.subplots()
-            ax.imshow(frame)
-            ax.set_title('Frame {}'.format(i))
-            ax.axis('off')
-        plt.show()
+        display_frames(arr)
 
     def transform(self, frames):
         """

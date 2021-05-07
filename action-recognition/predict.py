@@ -23,6 +23,6 @@ model.to(device)
 if checkpoint:
     model = load_model(model, checkpoint)
 
+# Print prediction
 output = predict(model, video_path)
-
 print("Prediction:", output)
