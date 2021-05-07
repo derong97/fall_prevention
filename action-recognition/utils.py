@@ -60,6 +60,7 @@ def predict(model, video_path):
     """
     Predicts the label of the video given its filepath
     """
+    model.eval()
     
     frames = np.load(video_path)
 

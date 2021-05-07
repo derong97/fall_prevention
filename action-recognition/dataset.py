@@ -120,6 +120,7 @@ class MLX90640_Dataset(Dataset):
             
             # only apply data augmentation to training samples
             if self.group == 'train':
+                # TODO: translation?
                 pass
             
             arr.append(im)
