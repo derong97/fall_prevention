@@ -1,0 +1,4 @@
+seeed_mlx9064x
+torch
+numpy
+cv2
