@@ -1,4 +1,4 @@
-seeed_mlx9064x
-torch
+seeed-python-mlx9064x
 numpy
-cv2
+opencv-python
+torch
