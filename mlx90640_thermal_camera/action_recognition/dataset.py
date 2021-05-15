@@ -26,19 +26,23 @@ class MLX90640_Dataset(Dataset):
         # Size of frame: mlx90640 is a 32x24 IR array
         self.frame_size = (24, 32)
 
-        # 12 classes: 1 for each of the 7 steps (hand specified if any)
+        # 5 classes
         self.classes = {0: 'sit',
                         1: 'stand',
-                        2: 'tilt'}
+                        2: 'bend',
+                        3: 'inaction',
+                        4: 'tampered'}
 
         # Dataset should belong to only one group: train, test or val
         self.group = group
         
         # root directory for the data
         root_dir = data_dir + '/{}'.format(self.group)
-        self.dataset_paths = {'sit': root_dir + '/sit', \
-                              'stand': root_dir + '/stand', \
-                              'tilt': root_dir + '/tilt'}
+        self.dataset_paths = {'sit': root_dir + '/sit',
+                              'stand': root_dir + '/stand',
+                              'bend': root_dir + '/bend',
+                              'inaction': root_dir + '/inaction',
+                              'tampered': root_dir + '/tampered'}
         
         # Number of videos for each class in the dataset
         self.dataset_numbers = {}
@@ -152,15 +156,23 @@ class MLX90640_Dataset(Dataset):
 
         first_val = int(list(self.dataset_numbers.values())[0])
         second_val = int(list(self.dataset_numbers.values())[1]) + first_val
+        third_val = int(list(self.dataset_numbers.values())[2]) + second_val
+        fourth_val = int(list(self.dataset_numbers.values())[3]) + third_val
 
         if index < first_val:
             class_num = 0
         elif index < second_val:
             class_num = 1
             index -= first_val
-        else:
+        elif index < third_val:
             class_num = 2
             index -= second_val
+        elif index < fourth_val:
+            class_num = 3
+            index -= third_val
+        else:
+            class_num = 4
+            index -= fourth_val
 
         class_val = self.classes[class_num]
         one_hot[class_num] = 1

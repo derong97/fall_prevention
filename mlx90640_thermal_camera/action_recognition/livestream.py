@@ -26,9 +26,7 @@ if __name__  == '__main__':
     ARCH_TYPE = 'custom'
     DEVICE = torch.device("cpu")
     NUM_FRAMES = 10
-    CLASSES = {0: 'sit',
-               1: 'stand',
-               2: 'tilt'}
+    CLASSES = {0: 'sit', 1: 'stand', 2: 'bend', 3: 'inaction', 4: 'tampered'}
     
     # load model
     model = CNN_LSTM(ARCH_TYPE, DEVICE).to(DEVICE)

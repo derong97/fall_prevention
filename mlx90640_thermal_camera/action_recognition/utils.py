@@ -39,7 +39,7 @@ def evaluate(model, device, data_loader):
     """
     model.eval()
     loss = 0
-    confusion_matrix = torch.zeros(3, 3) # 3 classes
+    confusion_matrix = torch.zeros(5, 5) # 5 classes
     with torch.no_grad():
         for data, target in data_loader:
             data, target = data.to(device), target.to(device)
@@ -82,9 +82,8 @@ def predict(model, video_path):
 
     output = model(arr)
     pred = output.argmax(dim=1, keepdim=True).item()
-    classes = {0: 'sit',
-               1: 'stand',
-               2: 'tilt'}
+    classes = {0: 'sit', 1: 'stand', 2: 'bend', 3: 'inaction', 4: 'tampered'}
+    
     prediction = classes[pred]
     return prediction    
 
