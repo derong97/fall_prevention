@@ -1,0 +1,13 @@
+.ready-bttn{
+  margin-top: 50%;
+  margin-bottom: 10%;
+  width: 200px;
+  background-color: rgba(232, 128, 138, 0.75);
+  border: none;
+  border-radius: 30px;
+  padding: 12px 15px;
+  outline: 0;
+  font-family: "Gotham-Medium";
+  font-size: 15px;
+  color: white;
+}
