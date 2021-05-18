@@ -32,7 +32,7 @@ class CNN_LSTM(nn.Module):
         self.fc1 = nn.Sequential(nn.Linear(8960, 128), nn.Dropout())
         self.rnn = nn.LSTM(128, 256, num_layers = 1)
         self.fc2 = nn.Sequential(nn.Linear(256, 128), nn.ReLU(), nn.Dropout())
-        self.classifier = nn.Linear(128, 3)
+        self.classifier = nn.Linear(128, 5)
 
     def forward(self, inputs, hidden=None):
         seq_length = len(inputs[0])
