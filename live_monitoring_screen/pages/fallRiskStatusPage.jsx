@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {StyleSheet, Text, TextInput, View} from 'react-native';
-import "../styles/buttons.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faAngleLeft,faToilet,faDoorOpen, faWalking} from "@fortawesome/free-solid-svg-icons";
 import { withRouter } from "react-router-dom";
@@ -15,8 +14,8 @@ class readyPage extends Component {
       patientAccompanied: props.location.state.patientAccompanied,
       bedNumber: props.location.state.bedNumber,
 
-      fallRiskStatus: "mod",
-      timeElapsed: 1621448932,
+      fallRiskStatus: "high",
+      timeElapsed: 5,
     }
   }
 

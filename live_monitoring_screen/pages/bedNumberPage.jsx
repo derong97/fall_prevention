@@ -1,10 +1,10 @@
 import React, {Component} from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {StyleSheet, Text, TextInput, View} from 'react-native';
-import "../styles/buttons.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faAngleLeft,faToilet,faAngleDoubleRight, faWalking} from "@fortawesome/free-solid-svg-icons";
 import { withRouter } from "react-router-dom";
+import axios from "axios";
 
 class bedNumberPage extends React.Component {
 

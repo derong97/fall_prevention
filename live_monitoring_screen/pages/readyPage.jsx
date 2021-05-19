@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, StyleSheet, Text, View } from 'react-native';
-import "../styles/buttons.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faUserNurse, faUser} from "@fortawesome/free-solid-svg-icons";
 import { withRouter } from "react-router-dom";
