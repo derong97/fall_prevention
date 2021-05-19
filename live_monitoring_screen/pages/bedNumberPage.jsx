@@ -1,9 +1,9 @@
 import React, {Component} from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button, StyleSheet, Text, View } from 'react-native';
+import {StyleSheet, Text, TextInput, View} from 'react-native';
 import "../styles/buttons.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faUserNurse, faUser} from "@fortawesome/free-solid-svg-icons";
+import {faAngleLeft,faToilet,faAngleDoubleRight, faWalking} from "@fortawesome/free-solid-svg-icons";
 import { withRouter } from "react-router-dom";
 
 class bedNumberPage extends React.Component {
@@ -12,39 +12,80 @@ class bedNumberPage extends React.Component {
     super(props);
     this.state = {
       patientAccompanied: props.location.state.patientAccompanied,
+      bedNumber: 0,
+      isNotNumeric: 0,
+      isNotValidBedNumber: 0,
     };
   }
 
-  startSession = (patientAccompaniedBoolean) => {
-    this.setState({patientAccompanied: patientAccompaniedBoolean}, () => {
-      console.log(this.state.patientAccompanied)
-    });
-
+  backPage = () => {
     this.props.history.push("/");
+  }
+
+  nextPage = () => {
+    this.props.history.push({ pathname: "/fallriskstatus", state: {patientAccompanied: this.state.patientAccompanied, bedNumber: this.state.bedNumber}});
+  }
+
+  onBedNumberChange = (value) => {
+     
+      this.setState({bedNumber: value}, () => {
+      });
+
+  }
+
+
+  onSubmitBedNumber = () => {
+
+    if (isNaN(this.state.bedNumber)){
+        this.setState({isNotNumeric: 1} , () => {
+            this.render()
+        })
+
+    } else if ((this.state.bedNumber <= 0) || (this.state.bedNumber > 40)) {
+        this.setState({isNotValidBedNumber: 1} , () => {
+            this.render()
+        })
+
+    } else {
+        this.nextPage();
+    }
+
   }
 
   render () {
     return (
       <View>
-        <View style = {styles.ready}>
-          <Text style = {styles.textready}>{this.state.patientAccompanied}</Text>
+        <View style = {styles.status}>
+         <Text style = {styles.textHeaderLight}>Patient is:</Text>
+          <Text style = {styles.textAccompaniedStatus}>{this.state.patientAccompanied ? "Accompanied" : "Alone"}</Text>
         </View>
-  
-        <View style = {styles.letsgetstarted}>
-          <Text style = {styles.textbody} >Patient will be ... </Text>
+
+        <View style = {styles.bedNumberForm}>
+            <Text style = {styles.textHeaderDark}>Enter bed number:</Text>
+             <TextInput 
+                style = {styles.input}
+                placeholder = "enter bed number"
+                onChangeText = {(value) => this.onBedNumberChange(value)}
+                keyboardType = "number-pad"
+                />
+
+            <Text style = {styles.textAlert}>{this.state.isNotNumeric ? "Invalid input. Please key in a number." : null}</Text>   
+
+            <Text style = {styles.textAlert}>{this.state.isNotValidBedNumber ? "Invalid bed number. Please key in a valid bed number." : null}</Text>   
+
         </View>
-  
+
         <View style = {styles.buttons}>
-          <button styles = {styles.buttonText} type="button" className="btn btn-outline-dark" onClick={() => this.startSession(1)}>
-            <FontAwesomeIcon icon ={faUserNurse} size = "4x" />
-            <FontAwesomeIcon icon ={faUser} size = "4x" />
-            <div>ACCOMPANIED</div>
+          <button id="default-bttn" type="button" className="btn btn-outline-dark" onClick={() => this.backPage()}>
+            <FontAwesomeIcon icon ={faAngleLeft} size = "2x" />
+            <div>back</div>
             </button>
-          <View style={styles.divider}>
-          </View>
-          <button styles = {styles.buttonText} type="button" className="btn btn-outline-dark" onClick={() => this.startSession(0)}>
-            <FontAwesomeIcon icon ={faUser} size = "4x" />
-            <div>ALONE</div>
+
+            <button id="default-bttn" type="button" className="btn btn-success" onClick={() => this.onSubmitBedNumber()}>
+            <FontAwesomeIcon icon ={faWalking} size = "2x" />
+            <FontAwesomeIcon icon ={faAngleDoubleRight} size = "2x" />
+            <FontAwesomeIcon icon ={faToilet} size = "2x" />
+            <div>start toileting session</div>
             </button>
         </View>
       </View>  
@@ -55,50 +96,70 @@ class bedNumberPage extends React.Component {
 
 export default withRouter(bedNumberPage);
 
+
+
 const styles = StyleSheet.create({
-  ready: {
+  status: {
     flex: 1,
-    backgroundColor: '#EFB700',
+    backgroundColor: '#353b40',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '200px',
+    padding: '20px',
   },
 
-  letsgetstarted: {
+  bedNumberForm: {
     flex: 1,
+    backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: "20px",
+    padding: '30px',
   },
 
   buttons: {
+    flex: 1,
     flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
-    height: "180px"
+    height: "100px",
+    justifyContent: "space-between",
+    marginBottom: 36,
+    padding: 30
   },
 
-  textready: {
+  textAccompaniedStatus: {
       fontFamily: "Gotham-Ultra",
-      fontSize: "100px",
+      fontSize: "60px",
       color: "white"
   },
 
-  textbody: {
+  textHeaderLight: {
+    fontFamily: "Gotham-Black",
+    fontSize: "30px",
+    color: "white"
+},
+
+textHeaderDark: {
+    fontFamily: "Gotham-Black",
+    fontSize: "20px",
+    color: "#566c79"
+},
+
+
+textAlert: {
     fontFamily: "Gotham-Medium",
-    color: "black",
-    fontSize: "30px"
-  },
+    color: "red",
+    fontSize: "15px"
+},
 
   divider: {
     width: "200px",
   },
 
-  buttonText: {
-    fontFamily: "Gotham-Ultra",
-    color: "white",
-    padding: 30
+  input : {
+    borderWidth: 2, 
+    borderColor: "#566c79",
+    padding: 8,
+    margin: 10,
+    width: 200,
+    textAlign: "center"
   }
-});
 
+});
