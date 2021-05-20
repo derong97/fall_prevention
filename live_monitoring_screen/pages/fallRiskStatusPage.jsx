@@ -4,6 +4,11 @@ import {StyleSheet, Text, TextInput, View} from 'react-native';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faAngleLeft,faToilet,faDoorOpen, faWalking} from "@fortawesome/free-solid-svg-icons";
 import { withRouter } from "react-router-dom";
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "http://localhost:3000/current_patient_details"
+})
 
 
 class readyPage extends Component {
@@ -14,12 +19,47 @@ class readyPage extends Component {
       patientAccompanied: props.location.state.patientAccompanied,
       bedNumber: props.location.state.bedNumber,
 
-      fallRiskStatus: "high",
-      timeElapsed: 5,
+      fallRiskStatus: "low",
+      timeStarted: props.location.state.timeStarted
     }
+
+    this.getData();
+    console.log("fallriskstatus page");
+    console.log(this.state.timeStarted);
+
+  }
+
+  getData = () => {
+    api.get('/').then(res => {
+    console.log(res.data[0])
+    const data = res.data[0]
+  
+   })
+  }
+
+  
+  setData = () => {
+    const params = { 
+      bed_number: this.state.bedNumber,
+      patient_accompanied: this.state.patientAccompanied,
+      time_started: 10,
+      time_stopped: 20
+    }
+    api.post('/', params).then(res => {
+
+    })
+  }
+
+
+  deleteData = () => {
+
+      api.delete("/1").then((res) => {
+          console.log(res.status);
+      })
   }
 
   backPage = () => {
+    this.deleteData();
     this.props.history.push({ pathname: "/bednumber", state: {patientAccompanied: this.state.patientAccompanied}});
   }
 
@@ -29,6 +69,7 @@ class readyPage extends Component {
 
   onEndSession = () => {
     this.props.history.push("/");
+    this.deleteData();
     console.log("session ended");
   }
 
@@ -61,7 +102,7 @@ class readyPage extends Component {
 
         <View>
           <Text style = {styles.textHeaderLightCenter}>Time elapsed:</Text>
-          <Text style = {styles.textTimeElapsed}>{this.state.timeElapsed} mins </Text>
+          <Text style = {styles.textTimeElapsed}>{this.state.timeStarted} mins </Text>
         </View>
 
         <View>
@@ -102,7 +143,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     // alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '20px',
+    padding: '15px',
   },
 
   noAction: {
@@ -110,7 +151,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#008450',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '210px',
+    padding: '150px',
+    textAlign:"center"
   },
 
   getReady: {
@@ -148,8 +190,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     height: "100px",
     justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 36,
-    padding: 30
+    padding: 20
   },
 
   textAccompaniedStatus: {

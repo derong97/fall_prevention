@@ -6,6 +6,12 @@ import {faAngleLeft,faToilet,faAngleDoubleRight, faWalking} from "@fortawesome/f
 import { withRouter } from "react-router-dom";
 import axios from "axios";
 
+const api = axios.create({
+    baseURL: "http://localhost:3000/current_patient_details"
+  })
+
+const timeStarted = Date.now()
+
 class bedNumberPage extends React.Component {
 
   constructor(props) {
@@ -15,6 +21,7 @@ class bedNumberPage extends React.Component {
       bedNumber: 0,
       isNotNumeric: 0,
       isNotValidBedNumber: 0,
+      timeStarted: timeStarted
     };
   }
 
@@ -23,7 +30,7 @@ class bedNumberPage extends React.Component {
   }
 
   nextPage = () => {
-    this.props.history.push({ pathname: "/fallriskstatus", state: {patientAccompanied: this.state.patientAccompanied, bedNumber: this.state.bedNumber}});
+    this.props.history.push({ pathname: "/fallriskstatus", state: {patientAccompanied: this.state.patientAccompanied, bedNumber: this.state.bedNumber, timeStarted: this.state.timeStarted}});
   }
 
   onBedNumberChange = (value) => {
@@ -31,6 +38,29 @@ class bedNumberPage extends React.Component {
       this.setState({bedNumber: value}, () => {
       });
 
+  }
+
+  getData = () => {
+    api.get('/').then(res => {
+    console.log(res.data[0])
+    const data = res.data[0]
+
+   })
+  }
+
+  postData = () => {
+
+    const params = { 
+        bed_number: this.state.bedNumber,
+        patient_accompanied: this.state.patientAccompanied,
+        time_started: this.state.timeStarted,
+        time_stopped: 0,
+      }
+
+      api.post("/", params)
+      .then((res) => {
+          console.log(res.status);
+      })
   }
 
 
@@ -47,6 +77,7 @@ class bedNumberPage extends React.Component {
         })
 
     } else {
+        this.postData();
         this.nextPage();
     }
 
@@ -74,6 +105,10 @@ class bedNumberPage extends React.Component {
             <Text style = {styles.textAlert}>{this.state.isNotValidBedNumber ? "Invalid bed number. Please key in a valid bed number." : null}</Text>   
 
         </View>
+
+        <View style = {styles.divider}></View>
+
+        {/* <div style = {styles.divider}></div> */}
 
         <View style = {styles.buttons}>
           <button id="default-bttn" type="button" className="btn btn-outline-dark" onClick={() => this.backPage()}>
@@ -150,7 +185,7 @@ textAlert: {
 },
 
   divider: {
-    width: "200px",
+    padding: "180px",
   },
 
   input : {
