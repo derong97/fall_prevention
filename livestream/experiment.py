@@ -96,6 +96,10 @@ if __name__  == '__main__':
     with open("data.csv", "a", encoding="utf-8") as csv_file:
         writer = csv.writer(csv_file)
         
+        if csv_file.tell() == 0:
+            headers = ['timestamp', 'exp_no', 'sit_score', 'stand_score', 'bend_score', 'inaction_score', 'tampered_score', 'w1_voltage', 'w2_voltage', 'w3_voltage', 'w4_voltage', 'label']
+            writer.writerow(headers)
+        
         # get the first 10 frames
         frames = np.zeros((NUM_FRAMES, 96, 72))
         for i in range(NUM_FRAMES):
