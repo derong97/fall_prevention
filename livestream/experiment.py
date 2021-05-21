@@ -7,22 +7,25 @@ import serial
 import csv 
 import time
 import sys
+import os
 
 label = '0' 
 last_weight_readings = '0.0,0.0,0.0,0.0'
 
 def scanning():
     """
-    Continuously scans for user input
+    Continuously scans for user input``
     """
     global label
     
-    label2action = {'0': 'sit', '1': 'stand', '2': 'fell'}
+    label2action = {'0': 'sit', '1': 'standing', '2': 'stand', '3': 'fell'}
     while True:
         user_input = input()
-        if user_input in ['0','1','2']:
+        if user_input in ['0','1','2', '3']:
             label = user_input
             print("Changed label to {} -> {}".format(label, label2action[user_input]))
+        else:
+            print("Invalid input")
 
 def receiving(ser):
     """
@@ -32,8 +35,8 @@ def receiving(ser):
 
     while True:
         if ser.in_waiting > 0: 
-            last_weight_readings = ser.readline().decode('utf-8').rstrip()
-            
+            last_weight_readings = ser.readline().decode('ascii', errors='replace').rstrip()
+
 def get_frame(mlx, frame): 
     """
     Get 1 frame from MLX90640 camera
@@ -42,18 +45,13 @@ def get_frame(mlx, frame):
         mlx.getFrame(frame)
     except ValueError:
         raise ValueError
-    frame = np.array(frame).astype('float') / 255
-    frame = frame.reshape(24,32)
+    frame = np.array(frame).astype('float')
+    frame = frame.reshape((24,32))
     frame = cv2.resize(frame, (72,96))
-    return frame
+    
+    return frame / 255
 
 if __name__  == '__main__':
-    # Parsing the argument
-    if len(sys.argv) < 2:
-        print('You need to specify the experiment number')
-        sys.exit()
-    
-    exp_no = sys.argv[1]
     
     print("Starting livestream...")
     
@@ -68,7 +66,7 @@ if __name__  == '__main__':
     
     MODEL_PATH = 'custom.pt'
     DEVICE = torch.device("cpu")
-    NUM_FRAMES = 10
+    NUM_FRAMES = 5
     
     # load model
     model = CNN_LSTM().to(DEVICE)
@@ -93,12 +91,18 @@ if __name__  == '__main__':
     t2.daemon = True
     t2.start()
     
-    with open("data.csv", "a", encoding="utf-8") as csv_file:
+    with open("data.csv", "r+", encoding="utf-8") as csv_file:
         writer = csv.writer(csv_file)
         
-        if csv_file.tell() == 0:
+        if os.stat("data.csv").st_size == 0:
             headers = ['timestamp', 'exp_no', 'sit_score', 'stand_score', 'bend_score', 'inaction_score', 'tampered_score', 'w1_voltage', 'w2_voltage', 'w3_voltage', 'w4_voltage', 'label']
             writer.writerow(headers)
+            expt_no = 0
+        else:
+            last_line = csv_file.readlines()[-1].split(',')
+            expt_no = int(last_line[1]) + 1
+        
+        print("Experiment number: {}".format(expt_no))
         
         # get the first 10 frames
         frames = np.zeros((NUM_FRAMES, 96, 72))
@@ -110,20 +114,25 @@ if __name__  == '__main__':
                 # Thermal Camera sensor
                 # replace the last frame with the incoming frame and predict
                 frames[:-1], frames[-1] = frames[1:], get_frame(mlx, frame)
+                
                 arr = np.expand_dims(frames, axis=0)
                 arr = torch.from_numpy(arr).float()
                 
                 # return the predicted log softmax scores
                 output = model(arr) 
                 sit, stand, bend, inaction, tampered = output.squeeze().tolist()
+                #pred = output.argmax(dim=1, keepdim=True).item()
+                #classes = ['sit','stand','bend','inaction','tampered']
+                #print(classes[pred])
 
                 # Weight sensor
                 w1, w2, w3, w4 = last_weight_readings.split(',')
             
                 timestamp = time.strftime('%d-%m-%Y %H:%M:%S')
-                new_entry = [timestamp, exp_no, sit, stand, bend, inaction, tampered, w1, w2, w3, w4, label]
+                new_entry = [timestamp, expt_no, sit, stand, bend, inaction, tampered, w1, w2, w3, w4, label]
                 writer.writerow(new_entry)
                 print(new_entry)
                 
             except KeyboardInterrupt:
+                csv_file.close()
                 sys.exit()
