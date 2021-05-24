@@ -121,21 +121,28 @@ if __name__  == '__main__':
         while True:
             try:
                 # Thermal Camera sensor
-                # replace the last frame with the incoming frame and predict
+                # replace the last 2 frames with the incoming frames and predict
                 frames[:-2], frames[-2], frames[-1] = frames[2:], get_frame(mlx, frame), get_frame(mlx, frame)
-                #frames = np.zeros((NUM_FRAMES, 96, 72))
-                #for i in range(NUM_FRAMES):
-                #    frames[i] = get_frame(mlx, frame)
                 
-                arr = np.expand_dims(frames, axis=0)
-                arr = torch.from_numpy(arr).float()
+                # get 90th percentile ambient temperature
+                temp = np.percentile(frame, 90)
                 
-                # return the predicted log softmax scores
-                output = model(arr) 
-                sit, stand, bend, inaction, tampered = output.squeeze().tolist()
-                #pred = output.argmax(dim=1, keepdim=True).item()
-                #classes = ['sit','stand','bend','inaction','tampered']
-                #print(classes[pred])
+                if temp < 25:
+                    inaction = 0
+                    sit, stand, bend, tampered = -20, -20, -20, -20 # set to low log-softmax scores
+                    print("inaction")
+                else:
+                    inaction = -20
+                    arr = np.expand_dims(frames, axis=0)
+                    arr = torch.from_numpy(arr).float()
+
+                    # return the predicted log softmax scores
+                    output = model(arr) 
+                    sit, stand, bend, tampered = output.squeeze().tolist()
+                
+                    pred = output.argmax(dim=1, keepdim=True).item()
+                    classes = ['sit','stand','bend','tampered']
+                    print(classes[pred])
 
                 # Weight sensor
                 w1, w2, w3, w4 = last_weight_readings.split(',')

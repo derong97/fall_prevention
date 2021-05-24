@@ -25,8 +25,8 @@ if __name__  == '__main__':
     MODEL_PATH = 'save_weights/custom.pt'
     ARCH_TYPE = 'custom'
     DEVICE = torch.device("cpu")
-    NUM_FRAMES = 10
-    CLASSES = {0: 'sit', 1: 'stand', 2: 'bend', 3: 'inaction', 4: 'tampered'}
+    NUM_FRAMES = 5
+    CLASSES = {0: 'sit', 1: 'stand', 2: 'bend', 3: 'tampered'}
     
     # load model
     model = CNN_LSTM(ARCH_TYPE, DEVICE).to(DEVICE)
@@ -44,7 +44,7 @@ if __name__  == '__main__':
     while True:
         try:
             # replace the last frame with the incoming frame and predict
-            frames[:-1], frames[-1] = frames[1:], get_frame()
+            frames[:-2], frames[-2], frames[-1] = frames[2:], get_frame(), get_frame()
             arr = np.expand_dims(frames, axis=0)
             arr = torch.from_numpy(arr).float()
             print(predict(model, arr, CLASSES))

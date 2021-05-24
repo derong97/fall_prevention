@@ -30,8 +30,7 @@ class MLX90640_Dataset(Dataset):
         self.classes = {0: 'sit',
                         1: 'stand',
                         2: 'bend',
-                        3: 'inaction',
-                        4: 'tampered'}
+                        3: 'tampered'}
 
         # Dataset should belong to only one group: train, test or val
         self.group = group
@@ -41,7 +40,6 @@ class MLX90640_Dataset(Dataset):
         self.dataset_paths = {'sit': root_dir + '/sit',
                               'stand': root_dir + '/stand',
                               'bend': root_dir + '/bend',
-                              'inaction': root_dir + '/inaction',
                               'tampered': root_dir + '/tampered'}
         
         # Number of videos for each class in the dataset
@@ -117,7 +115,9 @@ class MLX90640_Dataset(Dataset):
         Transforms the frames
         """
         arr = []
-        for frame in frames:
+        
+        # take 5 frames only
+        for frame in frames[:5]:
             frame = np.float32(frame)
             im = frame.reshape(self.frame_size)
             im = cv2.resize(im, tuple(i*3 for i in self.frame_size))
@@ -157,7 +157,6 @@ class MLX90640_Dataset(Dataset):
         first_val = int(list(self.dataset_numbers.values())[0])
         second_val = int(list(self.dataset_numbers.values())[1]) + first_val
         third_val = int(list(self.dataset_numbers.values())[2]) + second_val
-        fourth_val = int(list(self.dataset_numbers.values())[3]) + third_val
 
         if index < first_val:
             class_num = 0
@@ -167,12 +166,9 @@ class MLX90640_Dataset(Dataset):
         elif index < third_val:
             class_num = 2
             index -= second_val
-        elif index < fourth_val:
+        else:
             class_num = 3
             index -= third_val
-        else:
-            class_num = 4
-            index -= fourth_val
 
         class_val = self.classes[class_num]
         one_hot[class_num] = 1
