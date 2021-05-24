@@ -6,6 +6,7 @@ import cv2
 import serial
 import csv 
 import time
+from pathlib import Path
 import sys
 import os
 
@@ -21,7 +22,7 @@ def scanning():
     label2action = {'0': 'sit', '1': 'standing', '2': 'stand', '3': 'fell'}
     while True:
         user_input = input()
-        if user_input in ['0','1','2', '3']:
+        if user_input in label2action.keys():
             label = user_input
             print("Changed label to {} -> {}".format(label, label2action[user_input]))
         else:
@@ -77,25 +78,33 @@ if __name__  == '__main__':
     # MLX90640
     mlx = seeed_mlx9064x.grove_mxl90640()
     frame = [0] * 768
-    mlx.refresh_rate = seeed_mlx9064x.RefreshRate.REFRESH_8_HZ
+    mlx.refresh_rate = seeed_mlx9064x.RefreshRate.REFRESH_16_HZ
     
     ######################################
     ######       WEIGHT SENSOR     #######
     ######################################
     
     # Serial Output from Arduino
-    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-    ser.flush()
+    #ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+    #ser.flush()
     
-    t2 = Thread(target=receiving, args=(ser,))
-    t2.daemon = True
-    t2.start()
+    #t2 = Thread(target=receiving, args=(ser,))
+    #t2.daemon = True
+    #t2.start()
     
-    with open("data.csv", "r+", encoding="utf-8") as csv_file:
+    
+    ######################################
+    ######      DATA COLLECTION    #######
+    ######################################
+    
+    FILENAME = 'data2.csv'
+    Path(FILENAME).touch(exist_ok=True)
+    
+    with open(FILENAME, "r+", encoding="utf-8") as csv_file:
         writer = csv.writer(csv_file)
         
-        if os.stat("data.csv").st_size == 0:
-            headers = ['timestamp', 'exp_no', 'sit_score', 'stand_score', 'bend_score', 'inaction_score', 'tampered_score', 'w1_voltage', 'w2_voltage', 'w3_voltage', 'w4_voltage', 'label']
+        if os.stat(FILENAME).st_size == 0:
+            headers = ['timestamp', 'expt_no', 'sit_score', 'stand_score', 'bend_score', 'inaction_score', 'tampered_score', 'w1_voltage', 'w2_voltage', 'w3_voltage', 'w4_voltage', 'label']
             writer.writerow(headers)
             expt_no = 0
         else:
@@ -113,7 +122,10 @@ if __name__  == '__main__':
             try:
                 # Thermal Camera sensor
                 # replace the last frame with the incoming frame and predict
-                frames[:-1], frames[-1] = frames[1:], get_frame(mlx, frame)
+                frames[:-2], frames[-2], frames[-1] = frames[2:], get_frame(mlx, frame), get_frame(mlx, frame)
+                #frames = np.zeros((NUM_FRAMES, 96, 72))
+                #for i in range(NUM_FRAMES):
+                #    frames[i] = get_frame(mlx, frame)
                 
                 arr = np.expand_dims(frames, axis=0)
                 arr = torch.from_numpy(arr).float()
