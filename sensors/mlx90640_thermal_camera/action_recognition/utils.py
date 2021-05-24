@@ -39,7 +39,7 @@ def evaluate(model, device, data_loader):
     """
     model.eval()
     loss = 0
-    confusion_matrix = torch.zeros(5, 5) # 5 classes
+    confusion_matrix = torch.zeros(4, 4) # 4 classes
     with torch.no_grad():
         for data, target in data_loader:
             data, target = data.to(device), target.to(device)
@@ -82,7 +82,7 @@ def predict(model, video_path):
 
     output = model(arr)
     pred = output.argmax(dim=1, keepdim=True).item()
-    classes = {0: 'sit', 1: 'stand', 2: 'bend', 3: 'inaction', 4: 'tampered'}
+    classes = {0: 'sit', 1: 'stand', 2: 'bend', 3: 'tampered'}
     
     prediction = classes[pred]
     return prediction    
@@ -102,9 +102,9 @@ def get_accuracy(cm):
 
 def display_frames(arr):
     """
-    Prints 10 frames in 2x5 grid
+    Prints 10 frames in 1x5 grid
     """
-    fig, ax = plt.subplots(nrows=2, ncols=5, figsize=(10,5))
+    fig, ax = plt.subplots(nrows=1, ncols=5, figsize=(10,5))
     for i in range(arr.shape[0]):
         frame = arr[i]
         ax.ravel()[i].imshow(frame)

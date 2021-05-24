@@ -33,15 +33,17 @@ if __name__  == '__main__':
     # MLX90640
     mlx = seeed_mlx9064x.grove_mxl90640()
     frame = [0] * 768
-    mlx.refresh_rate = seeed_mlx9064x.RefreshRate.REFRESH_8_HZ
+    mlx.refresh_rate = seeed_mlx9064x.RefreshRate.REFRESH_4_HZ
     
     while True:
         try:
-            frames = take_n_frames(mlx, frame, 10)
+            frames = take_n_frames(mlx, frame, 5)
             save_filepath = root_dir + "/{}_".format(action) + str(save_index+1)
             np.save(save_filepath, frames)
             print(save_filepath, "saved")
             save_index += 1
+            
+            time.sleep(1)
 
         except KeyboardInterrupt:
             break
