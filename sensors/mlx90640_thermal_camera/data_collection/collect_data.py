@@ -33,7 +33,7 @@ if __name__  == '__main__':
     # MLX90640
     mlx = seeed_mlx9064x.grove_mxl90640()
     frame = [0] * 768
-    mlx.refresh_rate = seeed_mlx9064x.RefreshRate.REFRESH_2_HZ
+    mlx.refresh_rate = seeed_mlx9064x.RefreshRate.REFRESH_4_HZ
     
     while True:
         try:
@@ -43,7 +43,7 @@ if __name__  == '__main__':
             print(save_filepath, "saved")
             save_index += 1
             
-            time.sleep(2)
+            time.sleep(1)
 
         except KeyboardInterrupt:
             break

@@ -6,6 +6,6 @@ frame =  [0] * 768
 
 while True:
     mlx.getFrame(frame)
-    temp = np.percentile(frame,90)
+    temp = np.percentile(frame,95)
 
     print(temp)

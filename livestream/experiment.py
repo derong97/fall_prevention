@@ -78,7 +78,7 @@ if __name__  == '__main__':
     # MLX90640
     mlx = seeed_mlx9064x.grove_mxl90640()
     frame = [0] * 768
-    mlx.refresh_rate = seeed_mlx9064x.RefreshRate.REFRESH_16_HZ
+    mlx.refresh_rate = seeed_mlx9064x.RefreshRate.REFRESH_8_HZ
     
     ######################################
     ######       WEIGHT SENSOR     #######
@@ -104,7 +104,7 @@ if __name__  == '__main__':
         writer = csv.writer(csv_file)
         
         if os.stat(FILENAME).st_size == 0:
-            headers = ['timestamp', 'expt_no', 'sit_score', 'stand_score', 'bend_score', 'inaction_score', 'tampered_score', 'w1_voltage', 'w2_voltage', 'w3_voltage', 'w4_voltage', 'label']
+            headers = ['timestamp', 'expt_no', 'sit_score', 'stand_score', 'bend_score', 'tampered_score', 'inaction_score', 'w1_voltage', 'w2_voltage', 'w3_voltage', 'w4_voltage', 'label']
             writer.writerow(headers)
             expt_no = 0
         else:
@@ -125,7 +125,7 @@ if __name__  == '__main__':
                 frames[:-2], frames[-2], frames[-1] = frames[2:], get_frame(mlx, frame), get_frame(mlx, frame)
                 
                 # get 90th percentile ambient temperature
-                temp = np.percentile(frame, 90)
+                temp = np.percentile(frame, 95)
                 
                 if temp < 25:
                     inaction = 0
@@ -137,7 +137,7 @@ if __name__  == '__main__':
                     arr = torch.from_numpy(arr).float()
 
                     # return the predicted log softmax scores
-                    output = model(arr) 
+                    output = model(arr)
                     sit, stand, bend, tampered = output.squeeze().tolist()
                 
                     pred = output.argmax(dim=1, keepdim=True).item()
@@ -148,9 +148,9 @@ if __name__  == '__main__':
                 w1, w2, w3, w4 = last_weight_readings.split(',')
             
                 timestamp = time.strftime('%d-%m-%Y %H:%M:%S')
-                new_entry = [timestamp, expt_no, sit, stand, bend, inaction, tampered, w1, w2, w3, w4, label]
+                new_entry = [timestamp, expt_no, sit, stand, bend, tampered, inaction, w1, w2, w3, w4, label]
                 writer.writerow(new_entry)
-                print(new_entry)
+                #print(new_entry)
                 
             except KeyboardInterrupt:
                 csv_file.close()
