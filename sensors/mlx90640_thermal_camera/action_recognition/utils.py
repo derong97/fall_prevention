@@ -51,7 +51,7 @@ def evaluate(model, device, data_loader):
             
             for t, p in zip(target.view(-1), pred.view(-1)):
                 confusion_matrix[t.long(), p.long()] += 1
-
+                
     loss /= len(data_loader)
         
     return loss, confusion_matrix
@@ -66,7 +66,7 @@ def predict(model, video_path):
 
     # transform
     arr = []
-    for frame in frames:
+    for frame in frames[:5]:
         frame = np.float32(frame)
         im = frame.reshape((24, 32))
         im = cv2.resize(im, (72, 96))
