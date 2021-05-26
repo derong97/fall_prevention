@@ -97,14 +97,14 @@ if __name__  == '__main__':
     ######      DATA COLLECTION    #######
     ######################################
     
-    FILENAME = 'data2.csv'
+    FILENAME = 'data.csv'
     Path(FILENAME).touch(exist_ok=True)
     
     with open(FILENAME, "r+", encoding="utf-8") as csv_file:
         writer = csv.writer(csv_file)
         
         if os.stat(FILENAME).st_size == 0:
-            headers = ['timestamp', 'expt_no', 'sit_score', 'stand_score', 'bend_score', 'tampered_score', 'inaction_score', 'w1_voltage', 'w2_voltage', 'w3_voltage', 'w4_voltage', 'label']
+            headers = ['timestamp', 'expt_no', 'sit_score', 'stand_score', 'bend_score', 'tampered_score', 'inaction_score', 'fsr1', 'fsr2', 'fsr3', 'fsr4', 'label']
             writer.writerow(headers)
             expt_no = 0
         else:
@@ -150,7 +150,7 @@ if __name__  == '__main__':
                 timestamp = time.strftime('%d-%m-%Y %H:%M:%S')
                 new_entry = [timestamp, expt_no, sit, stand, bend, tampered, inaction, w1, w2, w3, w4, label]
                 writer.writerow(new_entry)
-                #print(new_entry)
+                print(new_entry)
                 
             except KeyboardInterrupt:
                 csv_file.close()

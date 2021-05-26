@@ -11,25 +11,14 @@ class CNN_LSTM(nn.Module):
         super(CNN_LSTM, self).__init__()
         
         self.features = nn.Sequential(
-            nn.Conv2d(3, 64, 3),
-            nn.BatchNorm2d(64),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d((2,2)),
-
-            nn.Conv2d(64, 128, 3),
-            nn.BatchNorm2d(128),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d((2,2)),
-            nn.Dropout2d(p=0.3),
-
-            nn.Conv2d(128, 128, 3),
-            nn.BatchNorm2d(128),
+            nn.Conv2d(3, 16, 3),
+            nn.BatchNorm2d(16),
             nn.ReLU(inplace=True),
             nn.MaxPool2d((2,2)),
             nn.Dropout2d(p=0.3),
         )
+        self.fc1 = nn.Sequential(nn.Linear(26320, 128), nn.Dropout())
         
-        self.fc1 = nn.Sequential(nn.Linear(8960, 128), nn.Dropout())
         self.rnn = nn.LSTM(128, 256, num_layers = 1)
         self.fc2 = nn.Sequential(nn.Linear(256, 128), nn.ReLU(), nn.Dropout())
         self.classifier = nn.Linear(128, 4)
