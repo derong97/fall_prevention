@@ -1,3 +1,11 @@
 {
-  "current_patient_details": []
+  "current_patient_details": [
+    {
+      "bed_number": "5",
+      "patient_accompanied": 0,
+      "time_started": 1621965670851,
+      "time_stopped": 0,
+      "id": 1
+    }
+  ]
 }

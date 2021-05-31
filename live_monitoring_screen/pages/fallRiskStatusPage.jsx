@@ -19,8 +19,8 @@ class readyPage extends Component {
       patientAccompanied: props.location.state.patientAccompanied,
       bedNumber: props.location.state.bedNumber,
 
-      fallRiskStatus: "low",
-      timeStarted: props.location.state.timeStarted
+      fallRiskStatus: "mod",
+      timeStarted: 5,//props.location.state.timeStarted
     }
 
     this.getData();
@@ -151,7 +151,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#008450',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '150px',
+    paddingBottom: '210px',
+    paddingTop: '210px',
     textAlign:"center"
   },
 
@@ -160,7 +161,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#EFB700',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '210px',
+    paddingBottom: '210px',
+    paddingTop: '210px',
   },
 
   comeNow: {
