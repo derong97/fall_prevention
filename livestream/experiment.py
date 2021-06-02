@@ -11,7 +11,7 @@ import sys
 import os
 
 label = '0' 
-last_weight_readings = '0.0,0.0,0.0,0.0'
+last_serial_readings = '0.0,0.0,0.0,0.0,0.0,0.0'
 
 def scanning():
     """
@@ -32,11 +32,11 @@ def receiving(ser):
     """
     Receives continuous byte data from Arduino
     """
-    global last_weight_readings
+    global last_serial_readings
 
     while True:
         if ser.in_waiting > 0: 
-            last_weight_readings = ser.readline().decode('ascii', errors='replace').rstrip()
+            last_serial_readings = ser.readline().decode('ascii', errors='replace').rstrip()
 
 def get_frame(mlx, frame): 
     """
@@ -104,7 +104,7 @@ if __name__  == '__main__':
         writer = csv.writer(csv_file)
         
         if os.stat(FILENAME).st_size == 0:
-            headers = ['timestamp', 'expt_no', 'sit_score', 'stand_score', 'bend_score', 'tampered_score', 'inaction_score', 'fsr1', 'fsr2', 'fsr3', 'fsr4', 'label']
+            headers = ['timestamp', 'expt_no', 'sit_score', 'stand_score', 'bend_score', 'tampered_score', 'inaction_score', 'w_bl', 'w_br', 'w_fl', 'w_fr', 'v_bidet', 'v_tissue', 'label']
             writer.writerow(headers)
             expt_no = 0
         else:
@@ -117,20 +117,23 @@ if __name__  == '__main__':
         frames = np.zeros((NUM_FRAMES, 96, 72))
         for i in range(NUM_FRAMES):
             frames[i] = get_frame(mlx, frame)
-            
+        
+        initial_temp = np.percentile(frame, 50) + 2
+        print('Initial temp: {}'.format(initial_temp))
+                
         while True:
             try:
                 # Thermal Camera sensor
                 # replace the last 2 frames with the incoming frames and predict
                 frames[:-2], frames[-2], frames[-1] = frames[2:], get_frame(mlx, frame), get_frame(mlx, frame)
                 
-                # get 90th percentile ambient temperature
-                temp = np.percentile(frame, 95)
+                # get 95th percentile ambient temperature
+                temp = np.percentile(frame, 95) 
                 
-                if temp < 25:
+                if initial_temp > temp:
                     inaction = 0
                     sit, stand, bend, tampered = -20, -20, -20, -20 # set to low log-softmax scores
-                    print("inaction")
+                    #print("inaction")
                 else:
                     inaction = -20
                     arr = np.expand_dims(frames, axis=0)
@@ -140,15 +143,15 @@ if __name__  == '__main__':
                     output = model(arr)
                     sit, stand, bend, tampered = output.squeeze().tolist()
                 
-                    pred = output.argmax(dim=1, keepdim=True).item()
-                    classes = ['sit','stand','bend','tampered']
-                    print(classes[pred])
+                    #pred = output.argmax(dim=1, keepdim=True).item()
+                    #classes = ['sit','stand','bend','tampered']
+                    #print(classes[pred])
 
                 # Weight sensor
-                w1, w2, w3, w4 = last_weight_readings.split(',')
+                w_br, w_bl, w_fr, w_fl, v_b, v_t = last_serial_readings.split(',')
             
                 timestamp = time.strftime('%d-%m-%Y %H:%M:%S')
-                new_entry = [timestamp, expt_no, sit, stand, bend, tampered, inaction, w1, w2, w3, w4, label]
+                new_entry = [timestamp, expt_no, sit, stand, bend, tampered, inaction, w_br, w_bl, w_fr, w_fl, v_b, v_t, label]
                 writer.writerow(new_entry)
                 print(new_entry)
                 
