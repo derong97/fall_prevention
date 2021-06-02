@@ -19,7 +19,7 @@ def scanning():
     """
     global label
     
-    label2action = {'0': 'sit', '1': 'standing', '2': 'stand', '3': 'fell'}
+    label2action = {'0': 'sit', '1': 'get up', '2': 'stand', '3': 'fell'}
     while True:
         user_input = input()
         if user_input in label2action.keys():
@@ -85,12 +85,12 @@ if __name__  == '__main__':
     ######################################
     
     # Serial Output from Arduino
-    #ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-    #ser.flush()
+    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+    ser.flush()
     
-    #t2 = Thread(target=receiving, args=(ser,))
-    #t2.daemon = True
-    #t2.start()
+    t2 = Thread(target=receiving, args=(ser,))
+    t2.daemon = True
+    t2.start()
     
     
     ######################################
@@ -118,7 +118,7 @@ if __name__  == '__main__':
         for i in range(NUM_FRAMES):
             frames[i] = get_frame(mlx, frame)
         
-        initial_temp = np.percentile(frame, 50) + 2
+        initial_temp = np.percentile(frame, 20) + 2
         print('Initial temp: {}'.format(initial_temp))
                 
         while True:
@@ -133,7 +133,7 @@ if __name__  == '__main__':
                 if initial_temp > temp:
                     inaction = 0
                     sit, stand, bend, tampered = -20, -20, -20, -20 # set to low log-softmax scores
-                    #print("inaction")
+                    print("inaction")
                 else:
                     inaction = -20
                     arr = np.expand_dims(frames, axis=0)
@@ -143,9 +143,9 @@ if __name__  == '__main__':
                     output = model(arr)
                     sit, stand, bend, tampered = output.squeeze().tolist()
                 
-                    #pred = output.argmax(dim=1, keepdim=True).item()
-                    #classes = ['sit','stand','bend','tampered']
-                    #print(classes[pred])
+                    pred = output.argmax(dim=1, keepdim=True).item()
+                    classes = ['sit','stand','bend','tampered']
+                    print(classes[pred])
 
                 # Weight sensor
                 w_br, w_bl, w_fr, w_fl, v_b, v_t = last_serial_readings.split(',')
