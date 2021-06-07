@@ -10,6 +10,7 @@ const api = axios.create({
   baseURL: "http://localhost:3000/current_patient_details"
 })
 
+var fallRiskStatus = "low";
 
 class readyPage extends Component {
 
@@ -18,15 +19,31 @@ class readyPage extends Component {
     this.state = {
       patientAccompanied: props.location.state.patientAccompanied,
       bedNumber: props.location.state.bedNumber,
-
-      fallRiskStatus: "low",
+      fallRiskStatus: fallRiskStatus,
       timeStarted: 0,//props.location.state.timeStarted
     }
+  }
 
-    this.getData();
-    console.log("fallriskstatus page");
-    console.log(this.state.timeStarted);
+  componentDidMount(){
+    this.interval = setInterval(() => {
+      this.getFallRiskStatus()
+      // console.log(currentRisk)
+      this.setState({ fallRiskStatus: fallRiskStatus })
 
+      }
+      , 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  getFallRiskStatus = () => {
+    api.get('/1').then(res => {
+    // console.log(res.data)
+    // console.log(res.data.fallRiskStatus)
+    fallRiskStatus = res.data.fallRiskStatus
+   })
   }
 
   getData = () => {

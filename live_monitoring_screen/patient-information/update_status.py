@@ -5,6 +5,6 @@ x = requests.get(baseURL)
 
 print(x.text)
 
-y = requests.patch(baseURL, data = {"fallRiskStatus" : "high"})
+y = requests.patch(baseURL, data = {"fallRiskStatus" : "mod"})
 
 print(y.text)

@@ -25,6 +25,7 @@ class bedNumberPage extends React.Component {
     };
   }
 
+
   backPage = () => {
     this.props.history.push("/");
   }
@@ -47,6 +48,7 @@ class bedNumberPage extends React.Component {
 
    })
   }
+
 
   postData = () => {
 
