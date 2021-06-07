@@ -55,6 +55,7 @@ class bedNumberPage extends React.Component {
         patient_accompanied: this.state.patientAccompanied,
         time_started: this.state.timeStarted,
         time_stopped: 0,
+        fallRiskStatus: "low"
       }
 
       api.post("/", params)

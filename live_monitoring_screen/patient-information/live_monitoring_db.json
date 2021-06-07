@@ -1,3 +1,12 @@
 {
-  "current_patient_details": []
+  "current_patient_details": [
+    {
+      "bed_number": "5",
+      "patient_accompanied": 1,
+      "time_started": 1623043426922,
+      "time_stopped": 0,
+      "fallRiskStatus": "high",
+      "id": 1
+    }
+  ]
 }

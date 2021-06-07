@@ -19,8 +19,8 @@ class readyPage extends Component {
       patientAccompanied: props.location.state.patientAccompanied,
       bedNumber: props.location.state.bedNumber,
 
-      fallRiskStatus: "mod",
-      timeStarted: 5,//props.location.state.timeStarted
+      fallRiskStatus: "low",
+      timeStarted: 0,//props.location.state.timeStarted
     }
 
     this.getData();
