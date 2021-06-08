@@ -25,6 +25,7 @@ class bedNumberPage extends React.Component {
     };
   }
 
+
   backPage = () => {
     this.props.history.push("/");
   }
@@ -48,6 +49,7 @@ class bedNumberPage extends React.Component {
    })
   }
 
+
   postData = () => {
 
     const params = { 
@@ -55,6 +57,7 @@ class bedNumberPage extends React.Component {
         patient_accompanied: this.state.patientAccompanied,
         time_started: this.state.timeStarted,
         time_stopped: 0,
+        fallRiskStatus: "low"
       }
 
       api.post("/", params)
