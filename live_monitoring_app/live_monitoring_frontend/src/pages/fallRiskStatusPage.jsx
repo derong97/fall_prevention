@@ -5,8 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faAngleLeft,faDoorOpen, faWalking} from "@fortawesome/free-solid-svg-icons";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
-import cautionSign from "../images/warning-256.png";
+import Sound from 'react-sound';
 
+import cautionSign from "../images/warning-256.png";
+import fallAlertSound from "../sounds/fall_alert2.mp3"
+import comeNowSound from "../sounds/come_now_alert.mp3"
+import getReadySound from "../sounds/get_ready_alert.mp3"
 
 const api = axios.create({
   // baseURL: "http://localhost:3000/current_patient_details"
@@ -34,7 +38,7 @@ class readyPage extends Component {
       var fall_risk_status = this.getFallRiskStatus()
       var newTimeElapsedSeconds = parseInt(this.state.timeElapsedSeconds) + 1
 
-      if (newTimeElapsedSeconds%60==0){ //to increment if it's a new minute
+      if (newTimeElapsedSeconds%60===0){ //to increment if it's a new minute
         var newTimeElapsedMinutes = this.state.timeElapsedMinutes + 1
         newTimeElapsedSeconds = 0
         this.setState({timeElapsedMinutes: newTimeElapsedMinutes})
@@ -95,28 +99,45 @@ class readyPage extends Component {
 
     var currentStatus;
 
-    if (this.state.fallRiskStatus == "low"){
+    if (this.state.fallRiskStatus === "low"){
       currentStatus = <View style = {styles.noAction}>
       <Text style = {styles.textStatus}>No Action Needed</Text>
       </View>
-    } else if (this.state.fallRiskStatus == "mod") {
+    } else if (this.state.fallRiskStatus === "mod") {
       currentStatus = <View style = {styles.getReady}>
       <Text style = {styles.textStatus}>Get Ready</Text>
+      <Sound 
+        url = {getReadySound}
+        loop = "True"
+        playStatus = {Sound.status.PLAYING} />
       </View>
-    } else if (this.state.fallRiskStatus == "tam") {
+    } else if (this.state.fallRiskStatus === "tam") {
       currentStatus = <View style = {styles.tampered}>
       <Text style = {styles.textStatus}>Camera is Blocked</Text>
       </View>
-    } else if (this.state.fallRiskStatus == "fall") {
+    } else if (this.state.fallRiskStatus === "fall") {
       currentStatus = <View style = {styles.fall}>
       <img src={cautionSign} />
       <Text style = {styles.textStatus}>COME NOW</Text>
       <img src={cautionSign} />
+      <Sound 
+        url = {fallAlertSound}
+        loop = "True"
+        playStatus = {Sound.status.PLAYING} />
+      </View>
+    }
+    else if (this.state.fallRiskStatus === "high") {
+      currentStatus = <View style = {styles.comeNow}>
+      <Text style = {styles.textStatus}>COME NOW</Text>
+      <Sound 
+        url = {comeNowSound}
+        loop = "True"
+        playStatus = {Sound.status.PLAYING} />
       </View>
     }
     else { 
-      currentStatus = <View style = {styles.comeNow}>
-      <Text style = {styles.textStatus}>COME NOW</Text>
+      currentStatus = <View style = {styles.noAction}>
+      <Text style = {styles.textStatus}>Patient is Accompanied</Text>
       </View>
     }
 

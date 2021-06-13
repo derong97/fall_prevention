@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -181,7 +181,6 @@ const styles = StyleSheet.create({
 
 textHeaderDark: {
     fontFamily: "Gotham-Black",
-    fontSize: "20px",
     color: "#566c79",
     fontSize: "40px"
 },

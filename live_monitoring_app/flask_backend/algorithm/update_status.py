@@ -19,12 +19,12 @@ highRiskUpdate = {'fall_risk_status': 'high'}
 tamUpdate = {'fall_risk_status': 'tam'}
 
 while True:
-    y = requests.patch(apiURL, json = fallUpdate)
+    y = requests.patch(apiURL, json = modRiskUpdate)
     print(y.text)
-    time.sleep(3)
-    y = requests.patch(apiURL, json = lowRiskUpdate)
-    print(y.text)
-    time.sleep(3)
+    time.sleep(6)
     y = requests.patch(apiURL, json = highRiskUpdate)
     print(y.text)
-    time.sleep(3)
+    time.sleep(6)
+    y = requests.patch(apiURL, json = fallUpdate)
+    print(y.text)
+    time.sleep(6)

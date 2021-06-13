@@ -1,9 +1,10 @@
 import flask
 import sys
-from start_algorithm import algo
+from start_algorithm import startAlgo, stopAlgo
 from flask import request, render_template, jsonify 
 from flask_cors import CORS
 from flask_mqtt import Mqtt
+
 
 # sys.path.insert(1, '../algorithm')
 # import start_algorithm
@@ -11,14 +12,6 @@ from flask_mqtt import Mqtt
 
 app = flask.Flask("__main__")
 CORS(app)
-
-# #setup MQTT 
-# app.config['MQTT_BROKER_URL'] = '127.0.0.1'
-# app.config['MQTT_BROKER_PORT'] = 1883
-# app.config['MQTT_USERNAME'] = 'raspberry'
-# app.config['MQTT_PASSWORD'] = 'password'
-# app.config['MQTT_REFRESH_TIME'] = 1.0  # refresh time in seconds
-# mqtt = Mqtt(app)
 
 data = {
     "bed_number": 0,
@@ -44,7 +37,7 @@ def json():
         data["bed_number"] = content["bed_number"]
         data["time_started"] = content["time_started"]
         data["patient_accompanied"] = content["patient_accompanied"]
-        x = algo()
+        # startAlgo()
         return jsonify(data), 200
 
     elif request.method == "PATCH": 
@@ -64,13 +57,8 @@ def json():
             "patient_accompanied": 0,
             "fall_risk_status": "low"
         }
+        # stopAlgo()
         return "", 200
-
-# #MQTT for starting and stopping the algo 
-# @mqtt.on_connect()
-# def handle_connect(client, userdata, flags, rc):
-#     mqtt.subscribe('home/mytopic')
-
 
 # Enable page refresh
 @app.errorhandler(404)
