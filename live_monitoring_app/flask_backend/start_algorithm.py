@@ -1,14 +1,15 @@
 import sys
 from threading import Thread
 
-startAlgo = True
+runAlgo = True
 
 def startAlgo():
-    global startAlgo
-    while startAlgo:
-        print("algorithm started")
+    global runAlgo
+    while runAlgo:
+        print(runAlgo)
 
 
 def stopAlgo():
-    startAlgo = False
+    global runAlgo
+    runAlgo = False
     print("algorithm stop called")

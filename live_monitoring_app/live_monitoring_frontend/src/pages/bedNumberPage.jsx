@@ -10,8 +10,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
-// import NumberPad from 'react-native-numpad';
 import NumPad from "react-numpad";
+import "../styles/buttons.css"
 
 const api = axios.create({
   baseURL: "http://127.0.0.1:5000",
@@ -91,12 +91,6 @@ class bedNumberPage extends React.Component {
 
         <View style={styles.bedNumberForm}>
           <Text style={styles.textHeaderDark}>Enter bed number:</Text>
-          {/* <TextInput
-            style={styles.input}
-            placeholder=""
-            onChangeText={(value) => this.onBedNumberChange(value)}
-            keyboardType="numeric"
-          /> */}
 
           <NumPad.Number
             onChange={(value) => this.onBedNumberChange(value)}
@@ -105,7 +99,7 @@ class bedNumberPage extends React.Component {
             placeholder = "0"
             // theme = {numPadTheme} this doesn't work idk why!! UGH
           >
-            <button type="button" class="btn btn-outline-dark btn-lg">
+            <button type="button" class="btn btn-outline-dark btn-lg" id="bed-no-bttn">
               {this.state.bedNumber}
             </button>
           </NumPad.Number>
@@ -222,27 +216,27 @@ const styles = StyleSheet.create({
   },
 });
 
-const numPadTheme = {
-  header: {
-    primaryColor: "#263238",
-    secondaryColor: "#f9f9f9",
-    highlightColor: "#FFC107",
-    backgroundColor: "#353b40",
-    fontFamily: "Gotham-Black",
+// const numPadTheme = {
+//   header: {
+//     primaryColor: "#263238",
+//     secondaryColor: "#f9f9f9",
+//     highlightColor: "#FFC107",
+//     backgroundColor: "#353b40",
+//     fontFamily: "Gotham-Black",
 
 
-  },
-  body: {
-    primaryColor: "#263238",
-    secondaryColor: "#32a5f2",
-    highlightColor: "#FFC107",
-    backgroundColor: "#f9f9f9",
-    fontFamily: "Gotham-Black",
+//   },
+//   body: {
+//     primaryColor: "#263238",
+//     secondaryColor: "#32a5f2",
+//     highlightColor: "#FFC107",
+//     backgroundColor: "#f9f9f9",
+//     fontFamily: "Gotham-Black",
 
-  },
-  panel: {
-    backgroundColor: "#CFD8DC",
-    fontFamily: "Gotham-Black",
+//   },
+//   panel: {
+//     backgroundColor: "#CFD8DC",
+//     fontFamily: "Gotham-Black",
 
-  },
-};
+//   },
+// };

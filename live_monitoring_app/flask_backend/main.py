@@ -4,6 +4,7 @@ from start_algorithm import startAlgo, stopAlgo
 from flask import request, render_template, jsonify 
 from flask_cors import CORS
 from flask_mqtt import Mqtt
+import threading
 
 app = flask.Flask("__main__")
 CORS(app)
@@ -32,7 +33,7 @@ def json():
         data["bed_number"] = content["bed_number"]
         data["time_started"] = content["time_started"]
         data["patient_accompanied"] = content["patient_accompanied"]
-        # startAlgo()
+        startAlgo()
         return jsonify(data), 200
 
     elif request.method == "PATCH": 
@@ -52,8 +53,9 @@ def json():
             "patient_accompanied": 0,
             "fall_risk_status": "low"
         }
-        # stopAlgo()
-        return "", 200
+        stopAlgo()
+        print(data)
+        return jsonify(data), 200
 
 # Enable page refresh
 @app.errorhandler(404)
@@ -62,5 +64,10 @@ def not_found(e):
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
+    
+    #to scan for stopAlgo
+    # t1 = Thread(target = stopAlgo, daemon = True)
+    # t1.daemon = True
+    # t1.start() 
 
     
