@@ -5,11 +5,6 @@ from flask import request, render_template, jsonify
 from flask_cors import CORS
 from flask_mqtt import Mqtt
 
-
-# sys.path.insert(1, '../algorithm')
-# import start_algorithm
-
-
 app = flask.Flask("__main__")
 CORS(app)
 
@@ -65,8 +60,7 @@ def json():
 def not_found(e):
     return render_template("index.html")
 
-app.run(port=5000, debug=True)
+if __name__ == '__main__':
+    app.run(port=5000, debug=True)
 
-
-# if __name__ == '__main__':
-#     app.run()
+    
