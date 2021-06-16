@@ -5,6 +5,7 @@ runAlgo = True
 
 def startAlgo():
     global runAlgo
+    runAlgo = True
     while runAlgo:
         print(runAlgo)
 
