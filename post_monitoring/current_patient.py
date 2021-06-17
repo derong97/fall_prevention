@@ -6,12 +6,8 @@ import matplotlib.pyplot as plt
 import datetime
 import plotly.graph_objects as go
 import time
-
 import mysql.connector
-
 from sqlalchemy import create_engine
-
-
 
 def app():
     engine = create_engine("mysql+pymysql://raspberry:password123^@localhost/post_monitoring_db")
@@ -66,8 +62,8 @@ def app():
                 date_first = edit_logs.loc[edit_logs['Bed Number'] == int(bed_reset), "Timestamp Start"].min() #date of first toilet visit
                 date_last = edit_logs.loc[edit_logs['Bed Number'] == int(bed_reset), "Timestamp Start"].max() #date of last toilet visit
                 send_old = df_logs[df_logs["Bed Number"] == int(bed_reset)] #select logs of patient to reset
-                send_old["Date First"] = pd.to_datetime(date_first)
-                send_old["Date Last"] = pd.to_datetime(date_last)
+                send_old["Date First"] = pd.to_datetime(date_first).date()
+                send_old["Date Last"] = pd.to_datetime(date_last).date()
                 send_old.columns = ['bed_number', 'timestamp_start','timestamp_end','hfr_count','accompanied','date_first','date_last']
                 send_old.to_sql('discharged_patient_logs',conn,if_exists='append',index = False) #send to 
                 refresh_command = "DELETE FROM current_patient_logs WHERE bed_number={0}".format(int(bed_reset))

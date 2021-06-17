@@ -5,7 +5,6 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 import datetime
 import plotly.graph_objects as go
-
 import mysql.connector
 from sqlalchemy import create_engine
 
@@ -33,13 +32,10 @@ def app():
     dataset, buffer_2, functions = st.beta_columns([1,1/20,1])
 
     #remove logs 1 year ago
-    #today_date = datetime.date.today() #get current date
-    #one_year =  today_date - datetime.timedelta(weeks=52) #get one year ago
-    #one_year_ago = one_year.strftime('%d/%m/%Y')
-    #one_year_ago = '11/06/2020'
-    #remove_data = "DELETE FROM discharged_patient_logs WHERE date_last = '{0}'".format(one_year_ago)
-    #remove_data = "DELETE FROM discharged_patient_logs WHERE bed_number = '{0}'".format(6)
-    #execute_query(conn, remove_data)
+    today_date = datetime.date.today() #get current date
+    one_year_ago =  today_date - datetime.timedelta(weeks=52) #get one year ago
+    remove_data = "DELETE FROM discharged_patient_logs WHERE date_last < '{0}'".format(one_year_ago)
+    execute_query(conn, remove_data)
     
     discharged_ward_data = "SELECT * FROM discharged_patient_logs"
     discharged_logs = pd.read_sql(discharged_ward_data, conn)
@@ -55,9 +51,6 @@ def app():
 
     with header: 
         st.title("Discharged Patient Log")
-        #st.write(type(one_year_ago))
-        #st.write(remove_data)
-        #st.write(one_year_ago)
 
     with dataset:
         st.header("")
@@ -86,9 +79,6 @@ def app():
                 timestamp_export = now.strftime("%d %m %Y %H%M")
                 export_logs = discharged_display[(discharged_display["Bed Number"] == bed_export) & (discharged_display["First Toilet Visit"] == date_input)]
                 export_logs.to_csv('bed {0} toilet log {1}.csv'.format(int(bed_export),timestamp_export),index=False)
-
-
-          
 
    
     conn.close()
