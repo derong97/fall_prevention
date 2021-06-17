@@ -14,5 +14,5 @@ CREATE TABLE `post_monitoring_db`.`discharged_patient_logs` (
   `timestamp_end`  TIMESTAMP NULL,
   `accompanied` INT NULL,
   `hfr_count` INT NULL,
-  `date_first` TIMESTAMP NULL,
-  `date_last` TIMESTAMP NULL);
+  `date_first` DATE NULL,
+  `date_last` DATE NULL);
