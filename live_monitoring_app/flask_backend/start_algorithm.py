@@ -14,7 +14,7 @@ import sys
 import time 
 # from sqlalchemy import create_engine
 
-runAlgo
+runAlgo = True
 
 baseURL = "http://127.0.0.1:5000"
 endpoint = "/patient-information"
