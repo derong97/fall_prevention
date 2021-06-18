@@ -3,7 +3,6 @@ import sys
 from start_algorithm import startAlgo, stopAlgo
 from flask import request, render_template, jsonify 
 from flask_cors import CORS
-from flask_mqtt import Mqtt
 import threading
 
 app = flask.Flask("__main__")
