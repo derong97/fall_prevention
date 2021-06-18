@@ -1,37 +1,37 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jun 11 13:53:39 2021
-
-@author: Gan Yu
-"""
-
 import numpy as np
-
-def get_notification(predicted_label):
-    if predicted_label == 0:
-        return "low"
-    elif predicted_label == 1:
-        return "high"
-    elif predicted_label == 3:
-        return "fall"
 
 #Setting threshold values
 thermal_weight = 0.68
-weight_weight = 1- thermal_weight
+weight_weight = 1 - thermal_weight
 w_f_decrease_inaction = -201.4796499
 w_f_increase_bend_stand = 149.2184482
 w_b_decrease_bend_stand = -77.02051206
 w_f_decrease_sit = -149.2184482
 w_b_increase_sit = 77.02051206
 
-previous_state_w_b = 0
-previous_state_w_f = 0
+#previous_state_w_b = 0
+#previous_state_w_f = 0
+
+def get_alert(posture_label, preemptive_label):
+    if posture_label == 0: # sit
+        if preemptive_label == 1: # performed preemptive actions
+            return "mod"
+        return "low"
+    elif posture_label == 1: # get up, stand
+        return "high"
+    elif posture_label == 3: # fall
+        return "fall"
+
+def get_preemptive_label(v_b, v_t):
+    if v_b + v_t >= 3:
+        return 1    
+    return 0    
     
-def get_predicted_label(sit_score, bend_score, stand_score, tampered_score, inaction_score, w_bl, w_br, w_fl, w_fr):
+def get_posture_label(sit_score, bend_score, stand_score, tampered_score, inaction_score,
+                        w_bl, w_br, w_fl, w_fr, previous_state_w_b=0, previous_state_w_f=0):
     w_b_sum = w_bl + w_br
     w_f_sum = w_fl + w_fr
-    global previous_state_w_b
-    global previous_state_w_f
+    
     w_b_change = w_b_sum - previous_state_w_b
     w_f_change = w_f_sum - previous_state_w_f
     sit_probability = np.exp(sit_score)
@@ -125,23 +125,10 @@ def get_predicted_label(sit_score, bend_score, stand_score, tampered_score, inac
             predicted_label = 1
     elif inaction_probability > tampered_probability:
         predicted_label = 3
-        #if w_f_change > w_f_decrease_inaction:
-            #sit_total = sit_probability*thermal_weight
-            #bend_total = bend_probability*thermal_weight
-            #stand_total = stand_probability*thermal_weight 
-            #tampered_total = tampered_probability*thermal_weight
-            #inaction_total = inaction_probability*thermal_weight+ weight_weight
-            #predicted_label = 3
     else:
       predicted_label = 1
+    
     previous_state_w_b = w_b_sum
     previous_state_w_f = w_f_sum
-    return(predicted_label)    
-
-get_predicted_label(0,-21.328,-22.827,-25.596,-20,200,200,300,300)
-get_predicted_label(0,-21.328,-22.827,-25.596,-20,200,250,300,240)
-get_predicted_label(0,-21.328,-22.827,-25.596,-20,300,350,200,240)
-
-previous_state_w_b
-previous_state_w_f
-
+    
+    return predicted_label, previous_state_w_b, previous_state_w_f
