@@ -12,12 +12,16 @@ import cv2
 import os
 import sys
 import time 
+# from sqlalchemy import create_engine
 
 runAlgo
 
 baseURL = "http://127.0.0.1:5000"
 endpoint = "/patient-information"
 apiURL = baseURL + endpoint
+
+# engine = create_engine("mysql+pymysql://raspberry:password123^@localhost/post_monitoring_db")
+# conn = engine.connect()
 
 def updateFallRiskStatus(final_label):
     updated_label = {'fall_risk_status': final_label}
