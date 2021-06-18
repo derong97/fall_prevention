@@ -1,4 +1,4 @@
-from predict import * 
+from utils import * 
 from model import * 
 from flask import jsonify
 import requests
