@@ -1,6 +1,7 @@
 import flask
 import sys
 from start_algorithm import startAlgo, stopAlgo
+import data
 from flask import request, render_template, jsonify 
 from flask_cors import CORS
 import threading
@@ -9,15 +10,8 @@ from sqlalchemy import create_engine
 app = flask.Flask("__main__")
 CORS(app)
 
-data = {
-    "bed_number": 0,
-    "time_started": 0,
-    "time_end": 0,
-    "time_stopped": 0,
-    "hfr_count": 0,
-    "patient_accompanied": 0,
-    "fall_risk_status": "low"
-}
+sql_engine = create_engine("mysql+pymysql://raspberry:password@10.21.147.2/post_monitoring_db")
+sql_conn = sql_engine.connect()
 
 @app.route("/")
 def frontend():
@@ -25,38 +19,33 @@ def frontend():
 
 @app.route("/patient-information", methods=["POST", "GET", "PATCH", "DELETE"])
 def json():
-    global data
+#     global BED_NUMBER, TIME_STARTED, TIME_STOPPED, HFR_COUNT, PATIENT_ACCOMPANIED, FALL_RISK_STATUS, HFR_COUNT
+    
     if request.method == "GET":
-        return jsonify(data), 200
+        print("get called", data.FALL_RISK_STATUS)
+        
+        return jsonify({"fall_risk_status": data.FALL_RISK_STATUS}), 200
       
     elif request.method == "POST": 
         content = request.json
-        data["bed_number"] = content["bed_number"]
-        data["time_started"] = content["time_started"]
-        data["patient_accompanied"] = content["patient_accompanied"]
-        startAlgo()
-        return jsonify(data), 200
+#         data.TIME_STARTED = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        startAlgo(content["bed_number"], content["patient_accompanied"])
+        return "", 200
 
     elif request.method == "PATCH": 
         print("patch api called")
         #to update fall risk status 
         content = request.json
         print(content)
-        data["fall_risk_status"] = content["fall_risk_status"]
-        return jsonify(data), 200
+        data.FALL_RISK_STATUS = content["fall_risk_status"]
+        return "", 200
 
-    elif request.method == "DELETE": 
-        data = {
-            "bed_number": 0,
-            "time_started": 0,
-            "time_end": 0,
-            "hfr_count": 0,
-            "patient_accompanied": 0,
-            "fall_risk_status": "low"
-        }
+    elif request.method == "DELETE":
+        
         stopAlgo()
-        print(data)
-        return jsonify(data), 200
+        
+        
+        return "", 200
 
 # Enable page refresh
 @app.errorhandler(404)
