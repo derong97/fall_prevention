@@ -4,6 +4,7 @@ from start_algorithm import startAlgo, stopAlgo
 from flask import request, render_template, jsonify 
 from flask_cors import CORS
 import threading
+from sqlalchemy import create_engine
 
 app = flask.Flask("__main__")
 CORS(app)
@@ -12,6 +13,7 @@ data = {
     "bed_number": 0,
     "time_started": 0,
     "time_end": 0,
+    "time_stopped": 0,
     "hfr_count": 0,
     "patient_accompanied": 0,
     "fall_risk_status": "low"
