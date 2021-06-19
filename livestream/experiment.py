@@ -19,7 +19,7 @@ def scanning():
     """
     global label
     
-    label2action = {'0': 'sit', '1': 'get up', '2': 'stand', '3': 'fell'}
+    label2action = {'0': 'sit', '1': 'get up', '2': 'stand', '3': 'inaction','4': 'tampered', '5':'preemptive'}
     while True:
         user_input = input()
         if user_input in label2action.keys():
@@ -118,7 +118,7 @@ if __name__  == '__main__':
         for i in range(NUM_FRAMES):
             frames[i] = get_frame(mlx, frame)
         
-        initial_temp = np.percentile(frame, 20) + 2
+        initial_temp = np.percentile(frame, 30) + 1.5
         print('Initial temp: {}'.format(initial_temp))
                 
         while True:
