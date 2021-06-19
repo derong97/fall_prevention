@@ -12,7 +12,7 @@ import cv2
 import os
 import sys
 import time 
-# from sqlalchemy import create_engine
+from sqlalchemy import create_engine
 
 runAlgo
 
@@ -20,8 +20,8 @@ baseURL = "http://127.0.0.1:5000"
 endpoint = "/patient-information"
 apiURL = baseURL + endpoint
 
-# engine = create_engine("mysql+pymysql://raspberry:password123^@localhost/post_monitoring_db")
-# conn = engine.connect()
+sql_engine = create_engine("mysql+pymysql://raspberry:password@10.21.147.2/post_monitoring_db")
+sql_conn = sql_engine.connect()
 
 def updateFallRiskStatus(final_label):
     updated_label = {'fall_risk_status': final_label}
@@ -144,7 +144,10 @@ def startAlgo():
             final_label = get_alert(posture_label, preemptive_label)
             updateFallRiskStatus(final_label)
        
-def stopAlgo():
+def stopAlgo(bed_number, timestamp_start, timestamp_end, accompanied, hfr_count):
     global runAlgo
     runAlgo = False
+    #add to post monitoring logs 
+    new_log = sql_conn.execute("INSERT INTO  `post_monitoring_db`.`current_patient_logs` (bed_number,timestamp_start,timestamp_end,accompanied,hfr_count) \
+                  VALUES ({},{},{},{},{})".format(bed_number, timestamp_start, timestamp_end, accompanied, hfr_count))
     print("algorithm stop called")

@@ -13,6 +13,7 @@ data = {
     "bed_number": 0,
     "time_started": 0,
     "time_end": 0,
+    "time_stopped": 0,
     "hfr_count": 0,
     "patient_accompanied": 0,
     "fall_risk_status": "low"

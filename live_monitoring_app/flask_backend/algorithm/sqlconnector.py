@@ -1,13 +1,4 @@
 
-# import mysql.connector
-
-# post_monitoring_logs = mysql.connector.connect(
-#     host = "10.21.147.2",
-#     user  = "raspberry",
-#     password = "password",
-# )
-
-# print(post_monitoring_logs)
 
 from sqlalchemy import create_engine
 
