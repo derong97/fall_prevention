@@ -1,5 +1,5 @@
-SQL_IP=52.73.249.157
-SQL_USER=historicriptide
-SQL_PW=futuresparkles
-SQL_DB=readme_sql
-SQL_KINDLE=Kindle
+SQL_IP=192.168.86.23
+SQL_USER=raspberry
+SQL_PW=password
+SQL_DB=post_monitoring_db
+

@@ -1,12 +1,12 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleLeft,
   faToilet,
   faAngleDoubleRight,
-  faWalking,
+  faWalking
 } from "@fortawesome/free-solid-svg-icons";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
@@ -51,6 +51,7 @@ class bedNumberPage extends React.Component {
   };
 
   postData = () => {
+    console.log("post data called") 
     const params = {
       bed_number: this.state.bedNumber, //streamlit
       patient_accompanied: this.state.patientAccompanied, //streamlit
@@ -60,11 +61,12 @@ class bedNumberPage extends React.Component {
       console.log(res.status);
       console.log(res.data.bed_number);
       console.log(res.data);
-      if (res.status == 200){
-        console.log("Bed number recorded. Toileting session started.")
+      if (res.status === 200){
+        console.log("Bed number recorded.")
       }
     })
     .catch((err) => {
+      console.log("Unable to start toileting session. Please try again.") 
       console.log(err.response);
       console.log(err.request);
     });;
@@ -103,7 +105,6 @@ class bedNumberPage extends React.Component {
             negative="False"
             decimal = {0}
             placeholder = "0"
-            // theme = {numPadTheme} this doesn't work idk why!! UGH
           >
             <button type="button" class="btn btn-outline-dark btn-lg" id="bed-no-bttn">
               {this.state.bedNumber}
@@ -125,8 +126,6 @@ class bedNumberPage extends React.Component {
 
         <View style={styles.divider}></View>
 
-        {/* <div style = {styles.divider}></div> */}
-
         <View style={styles.buttons}>
           <button
             id="default-bttn"
@@ -136,6 +135,7 @@ class bedNumberPage extends React.Component {
           >
             <FontAwesomeIcon icon={faAngleLeft} size="2x" />
             <div>back</div>
+
           </button>
 
           <button
@@ -150,6 +150,8 @@ class bedNumberPage extends React.Component {
             <div>start toileting session</div>
           </button>
         </View>
+        
+  
       </View>
     );
   }
@@ -180,7 +182,7 @@ const styles = StyleSheet.create({
     height: "100px",
     justifyContent: "space-between",
     marginBottom: 36,
-    padding: 30,
+    padding: 15,
   },
 
   textAccompaniedStatus: {
@@ -222,27 +224,4 @@ const styles = StyleSheet.create({
   },
 });
 
-// const numPadTheme = {
-//   header: {
-//     primaryColor: "#263238",
-//     secondaryColor: "#f9f9f9",
-//     highlightColor: "#FFC107",
-//     backgroundColor: "#353b40",
-//     fontFamily: "Gotham-Black",
 
-
-//   },
-//   body: {
-//     primaryColor: "#263238",
-//     secondaryColor: "#32a5f2",
-//     highlightColor: "#FFC107",
-//     backgroundColor: "#f9f9f9",
-//     fontFamily: "Gotham-Black",
-
-//   },
-//   panel: {
-//     backgroundColor: "#CFD8DC",
-//     fontFamily: "Gotham-Black",
-
-//   },
-// };

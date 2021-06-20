@@ -10,9 +10,6 @@ from sqlalchemy import create_engine
 app = flask.Flask("__main__")
 CORS(app)
 
-sql_engine = create_engine("mysql+pymysql://raspberry:password@10.21.147.2/post_monitoring_db")
-sql_conn = sql_engine.connect()
-
 @app.route("/")
 def frontend():
     return flask.render_template("index.html")
@@ -25,9 +22,12 @@ def json():
         
         return jsonify({"fall_risk_status": data.FALL_RISK_STATUS}), 200
       
-    elif request.method == "POST": 
+    elif request.method == "POST":
+        print("post called")
         content = request.json
-#         data.TIME_STARTED = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print("bed number: ", content["bed_number"])
+        print("patient accompanied: ", content["patient_accompanied"])
+        print("toileting session is starting...") 
         startAlgo(content["bed_number"], content["patient_accompanied"])
         return "", 200
 
@@ -40,9 +40,13 @@ def json():
         return "", 200
 
     elif request.method == "DELETE":
-        args = request.args
-        isAbort = args['key1']
-        stopAlgo(isAbort)
+#         args = request.args
+#         print(args.items())
+        content = request.json
+        print(content)
+        isAbort = content["is_abort"]
+        isAccompanied = content["is_accompanied"]
+        stopAlgo(isAbort, isAccompanied)
         return "", 200
 
 # Enable page refresh

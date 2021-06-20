@@ -21,8 +21,6 @@ const api = axios.create({
   baseURL: "http://127.0.0.1:5000",
 });
 
-var fallRiskStatus = "low";
-var isAbort = true;
 
 class readyPage extends Component {
   constructor(props) {
@@ -30,7 +28,7 @@ class readyPage extends Component {
     this.state = {
       patientAccompanied: props.location.state.patientAccompanied,
       bedNumber: props.location.state.bedNumber,
-      fallRiskStatus: fallRiskStatus,
+      fallRiskStatus: "low",
       timeStarted: props.location.state.timeStarted,
       timeElapsedMinutes: 0,
       timeElapsedSeconds: "00",
@@ -39,7 +37,7 @@ class readyPage extends Component {
 
   componentDidMount() {
     this.interval = setInterval(() => {
-      var fall_risk_status = this.getFallRiskStatus();
+      this.getFallRiskStatus();
 
       var newTimeElapsedSeconds = parseInt(this.state.timeElapsedSeconds) + 1;
 
@@ -51,7 +49,6 @@ class readyPage extends Component {
       }
 
       this.setState({
-        fallRiskStatus: fall_risk_status,
         timeElapsedSeconds:
           newTimeElapsedSeconds < 10
             ? "0" + newTimeElapsedSeconds
@@ -69,22 +66,29 @@ class readyPage extends Component {
       .get("/patient-information")
       .then((res) => {
         console.log(res.data.fall_risk_status);
-        fallRiskStatus = res.data.fall_risk_status;
-        return fallRiskStatus;
+        // fallRiskStatus = res.data.fall_risk_status;
+        this.setState({ fallRiskStatus: res.data.fall_risk_status });
       })
       .catch((err) => {
+        console.log("Unable to get latest activity status. Make sure the server is working.")
         console.log(err.response);
         console.log(err.request);
       });
   };
 
   deleteData = (isAbort) => {
+    console.log(isAbort)
+    const params = {
+      is_abort: isAbort,
+      is_accompanied: this.state.patientAccompanied
+    };
+    
     api
-      .delete("/patient-information", isAbort)
+      .delete("/patient-information", {data: params})
       .then((res) => {
         console.log(res.status);
         console.log(res.data);
-        if (res.status == 200) {
+        if (res.status === 200) {
           console.log("Toileting session successfully ended.");
         }
       })
@@ -121,66 +125,71 @@ class readyPage extends Component {
 
   render() {
     var currentStatus;
-
-    if (this.state.fallRiskStatus === "low") {
-      currentStatus = (
-        <View style={styles.noAction}>
-          <Text style={styles.textStatus}>No Action Needed</Text>
-        </View>
-      );
-    } else if (this.state.fallRiskStatus === "mod") {
-      currentStatus = (
-        <View style={styles.getReady}>
-          <Text style={styles.textStatus}>Get Ready</Text>
-          <Sound
-            url={getReadySound}
-            loop="True"
-            playStatus={Sound.status.PLAYING}
-          />
-        </View>
-      );
-    } else if (this.state.fallRiskStatus === "tam") {
-      currentStatus = (
-        <View style={styles.tampered}>
-          <Text style={styles.textStatus}>Camera is Blocked</Text>
-          <Sound
-            url={tamAlertSound}
-            loop="True"
-            playStatus={Sound.status.PLAYING}
-          />
-        </View>
-      );
-    } else if (this.state.fallRiskStatus === "fall") {
-      currentStatus = (
-        <View style={styles.fall}>
-          <img src={cautionSign} />
-          <Text style={styles.textStatus}>COME NOW</Text>
-          <img src={cautionSign} />
-          <Sound
-            url={fallAlertSound}
-            loop="True"
-            playStatus={Sound.status.PLAYING}
-          />
-        </View>
-      );
-    } else if (this.state.fallRiskStatus === "high") {
-      currentStatus = (
-        <View style={styles.comeNow}>
-          <Text style={styles.textStatus}>COME NOW</Text>
-          <Sound
-            url={comeNowSound}
-            loop="True"
-            playStatus={Sound.status.PLAYING}
-          />
-        </View>
-      );
-    } else {
-      currentStatus = (
-        <View style={styles.noAction}>
-          <Text style={styles.textStatus}>Patient is Accompanied</Text>
-        </View>
-      );
+    
+    if (this.state.patientAccompanied === 1){
+        currentStatus = (
+            <View style={styles.noAction}>
+              <Text style={styles.textStatus}>Patient is Accompanied</Text>
+            </View>
+          );
     }
+    else { // if patient is alone 
+        if (this.state.fallRiskStatus === "low") {
+          currentStatus = (
+            <View style={styles.noAction}>
+              <Text style={styles.textStatus}>No Action Needed</Text>
+            </View>
+          );
+        } else if (this.state.fallRiskStatus === "mod") {
+          currentStatus = (
+            <View style={styles.getReady}>
+              <Text style={styles.textStatus}>Get Ready</Text>
+              <Sound
+                url={getReadySound}
+                loop="True"
+                playStatus={Sound.status.PLAYING}
+              />
+            </View>
+          );
+        } else if (this.state.fallRiskStatus === "tam") {
+          currentStatus = (
+            <View style={styles.tampered}>
+              <Text style={styles.textStatus}>Camera is Blocked</Text>
+              <Sound
+                url={tamAlertSound}
+                loop="True"
+                playStatus={Sound.status.PLAYING}
+              />
+            </View>
+          );
+        } else if (this.state.fallRiskStatus === "fall") {
+          currentStatus = (
+            <View style={styles.fall}>
+              <img src={cautionSign} alt="patient fell"/>
+              <Text style={styles.textStatus}>COME NOW</Text>
+              <img src={cautionSign} alt="patient fell"/>
+              <Sound
+                url={fallAlertSound}
+                loop="True"
+                playStatus={Sound.status.PLAYING}
+              />
+            </View>
+          );
+        } else if (this.state.fallRiskStatus === "high") {
+          currentStatus = (
+            <View style={styles.comeNow}>
+              <Text style={styles.textStatus}>COME NOW</Text>
+              <Sound
+                url={comeNowSound}
+                loop="True"
+                playStatus={Sound.status.PLAYING}
+              />
+            </View>
+          );
+        }  
+    }
+    
+
 
     return (
       <View>
