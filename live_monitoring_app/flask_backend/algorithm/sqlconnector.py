@@ -10,16 +10,6 @@ new_log = sql_conn.execute("INSERT INTO  `post_monitoring_db`.`current_patient_l
 
 print("Row Added  = ",new_log.rowcount)
 
-# print(conn)
 
 
-
-#add bed_number, timestamp_start, timestamp_stop, accompanied, hfr count 
-
-# from sqlalchemy import create_engine
-# my_conn = create_engine("mysql+mysqldb://userid:password@localhost/database_name")
-
-# id=my_conn.execute("INSERT INTO  `database_name`.`student` (`name` ,`class` ,`mark` ,`sex`) \
-#                   VALUES ('King1',  'Five',  '45',  'male')")
-# print("Row Added  = ",id.rowcount)
 

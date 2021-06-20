@@ -54,14 +54,20 @@ class bedNumberPage extends React.Component {
     const params = {
       bed_number: this.state.bedNumber, //streamlit
       patient_accompanied: this.state.patientAccompanied, //streamlit
-      time_started: this.state.timeStarted, //streamlit
     };
 
     api.post("/patient-information", params).then((res) => {
       console.log(res.status);
       console.log(res.data.bed_number);
       console.log(res.data);
-    });
+      if (res.status == 200){
+        console.log("Bed number recorded. Toileting session started.")
+      }
+    })
+    .catch((err) => {
+      console.log(err.response);
+      console.log(err.request);
+    });;
   };
 
   onSubmitBedNumber = () => {

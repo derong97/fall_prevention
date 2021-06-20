@@ -1,6 +1,6 @@
 import flask
 import sys
-from start_algorithm import startAlgo, stopAlgo
+from algorithm import startAlgo, stopAlgo
 import data
 from flask import request, render_template, jsonify 
 from flask_cors import CORS
@@ -19,7 +19,6 @@ def frontend():
 
 @app.route("/patient-information", methods=["POST", "GET", "PATCH", "DELETE"])
 def json():
-#     global BED_NUMBER, TIME_STARTED, TIME_STOPPED, HFR_COUNT, PATIENT_ACCOMPANIED, FALL_RISK_STATUS, HFR_COUNT
     
     if request.method == "GET":
         print("get called", data.FALL_RISK_STATUS)
@@ -41,10 +40,9 @@ def json():
         return "", 200
 
     elif request.method == "DELETE":
-        
-        stopAlgo()
-        
-        
+        args = request.args
+        isAbort = args['key1']
+        stopAlgo(isAbort)
         return "", 200
 
 # Enable page refresh
@@ -55,9 +53,4 @@ def not_found(e):
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
     
-    #to scan for stopAlgo
-    # t1 = Thread(target = stopAlgo, daemon = True)
-    # t1.daemon = True
-    # t1.start() 
-
     

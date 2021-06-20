@@ -9,8 +9,6 @@ w_b_decrease_bend_stand = -77.02051206
 w_f_decrease_sit = -149.2184482
 w_b_increase_sit = 77.02051206
 
-#previous_state_w_b = 0
-#previous_state_w_f = 0
 
 def get_alert(posture_label, preemptive_label):
     if posture_label == 0: # sit

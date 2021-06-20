@@ -8,6 +8,7 @@ from threading import Thread
 import serial
 import csv 
 from pathlib import Path
+from decouple import config 
 import numpy as np
 import cv2
 import os
@@ -22,8 +23,14 @@ baseURL = "http://127.0.0.1:5000"
 endpoint = "/patient-information"
 apiURL = baseURL + endpoint
 
-sql_engine = create_engine("mysql+pymysql://raspberry:password@10.21.147.2/post_monitoring_db")
+SQL_IP = config('SQL_IP')
+SQL_USER = config('SQL_USER')
+SQL_PW = config('SQL_PW')
+SQL_DB = config('SQL_DB')
+
+sql_engine = create_engine("mysql+pymysql://{}:{}@{}/{}".format(SQL_USER, SQL_PW, SQL_IP, SQL_DB))
 sql_conn = sql_engine.connect()
+
 
 
 def get_frame(mlx, frame): 
@@ -52,7 +59,6 @@ def receiving(ser):
 
 
 def startAlgo(bed_number, patient_accompanied):
-#     global BED_NUMBER, TIME_STARTED, TIME_STOPPED, HFR_COUNT, PATIENT_ACCOMPANIED, FALL_RISK_STATUS, HFR_COUNT
         
     data.BED_NUMBER = bed_number
     data.TIME_STARTED = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -77,7 +83,7 @@ def startAlgo(bed_number, patient_accompanied):
 
     tam_count = 0 
 
-     ######################################
+    ######################################
     ######      THERMAL CAMERA     #######
     ######################################
     
@@ -173,22 +179,20 @@ def startAlgo(bed_number, patient_accompanied):
         
         print("start algo", final_label, data.FALL_RISK_STATUS)
        
-def stopAlgo():
+def stopAlgo(isAbort):
+    print("stop algorithm called")
     global runAlgo
     runAlgo = False
     
     data.TIME_STOPPED = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
     if data.HFR_COUNT > 10:
-        hfr_boolean = 1
+        isHFR = 1
     else:
-        hfr_boolean = 0
+        isHFR = 0
     
-    new_log = sql_conn.execute("INSERT INTO  `post_monitoring_db`.`current_patient_logs` (bed_number,timestamp_start,timestamp_end,accompanied,hfr_count) \
-              VALUES ('{}','{}','{}','{}','{}');".format(data.BED_NUMBER, data.TIME_STARTED,
-                                             data.TIME_STOPPED, data.PATIENT_ACCOMPANIED,
-                                             hfr_boolean))
-    #add to post monitoring logs 
-    #new_log = sql_conn.execute("INSERT INTO  `post_monitoring_db`.`current_patient_logs` (bed_number,timestamp_start,timestamp_end,accompanied,hfr_count) \
-     #             VALUES ({},{},{},{},{})".format(bed_number, timestamp_start, timestamp_end, accompanied, hfr_count))
-    print("algorithm stop called")
+    if isAbort == 0:
+        new_log = sql_conn.execute("INSERT INTO  `post_monitoring_db`.`current_patient_logs` (bed_number,timestamp_start,timestamp_end,accompanied,hfr_count) \
+                VALUES ('{}','{}','{}','{}','{}');".format(data.BED_NUMBER, data.TIME_STARTED,
+                                                data.TIME_STOPPED, data.PATIENT_ACCOMPANIED,
+                                                isHFR))

@@ -22,6 +22,7 @@ const api = axios.create({
 });
 
 var fallRiskStatus = "low";
+var isAbort = true;
 
 class readyPage extends Component {
   constructor(props) {
@@ -39,6 +40,7 @@ class readyPage extends Component {
   componentDidMount() {
     this.interval = setInterval(() => {
       var fall_risk_status = this.getFallRiskStatus();
+
       var newTimeElapsedSeconds = parseInt(this.state.timeElapsedSeconds) + 1;
 
       if (newTimeElapsedSeconds % 60 === 0) {
@@ -63,32 +65,38 @@ class readyPage extends Component {
   }
 
   getFallRiskStatus = () => {
-    api.get("/patient-information").then((res) => {
-      console.log(res.data.fall_risk_status);
-      fallRiskStatus = res.data.fall_risk_status;
-    });
-    return fallRiskStatus;
+    api
+      .get("/patient-information")
+      .then((res) => {
+        console.log(res.data.fall_risk_status);
+        fallRiskStatus = res.data.fall_risk_status;
+        return fallRiskStatus;
+      })
+      .catch((err) => {
+        console.log(err.response);
+        console.log(err.request);
+      });
   };
 
-  setData = () => {
-    const params = {
-      bed_number: this.state.bedNumber,
-      patient_accompanied: this.state.patientAccompanied,
-      time_started: 10,
-      time_stopped: 20,
-    };
-    api.post("/", params).then((res) => {});
-  };
-
-  deleteData = () => {
-    api.delete("/patient-information").then((res) => {
-      console.log(res.status);
-      console.log(res.data);
-    });
+  deleteData = (isAbort) => {
+    api
+      .delete("/patient-information", isAbort)
+      .then((res) => {
+        console.log(res.status);
+        console.log(res.data);
+        if (res.status == 200) {
+          console.log("Toileting session successfully ended.");
+        }
+      })
+      .catch((err) => {
+        console.log(err.response);
+        console.log(err.request);
+      });
   };
 
   backPage = () => {
-    this.deleteData();
+    
+    this.deleteData(1);
     this.props.history.push({
       pathname: "/bednumber",
       state: { patientAccompanied: this.state.patientAccompanied },
@@ -107,7 +115,7 @@ class readyPage extends Component {
 
   onEndSession = () => {
     this.props.history.push("/");
-    this.deleteData();
+    this.deleteData(0);
     console.log("session ended");
   };
 
