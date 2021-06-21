@@ -9,15 +9,7 @@ import mysql.connector
 from sqlalchemy import create_engine
 
 def app():
-    #conn = mysql.connector.connect(
-    #    host = "localhost",
-    #    port="3306",
-    #    user  = "raspberry",
-    #    password = "password123^",
-    #    database = "post_monitoring_db"
-    #)
-
-    engine = create_engine("mysql+pymysql://raspberry:password123^@localhost/post_monitoring_db")
+    engine = create_engine("mysql+pymysql://rpi:password123^@localhost/post_monitoring_db")
     conn = engine.connect()
 
     print(conn)
