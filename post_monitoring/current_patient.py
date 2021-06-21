@@ -10,15 +10,8 @@ import mysql.connector
 from sqlalchemy import create_engine
 
 def app():
-    engine = create_engine("mysql+pymysql://raspberry:password123^@localhost/post_monitoring_db")
+    engine = create_engine("mysql+pymysql://rpi:password123^@localhost/post_monitoring_db")
     conn = engine.connect()
-    #conn = mysql.connector.connect(
-    #    host = "localhost",
-    #    port="3306",
-    #    user  = "raspberry",
-    #    password = "password123^",
-    #    database = "post_monitoring_db"
-    #)
 
     print(conn)
 
@@ -64,7 +57,7 @@ def app():
                 send_old = df_logs[df_logs["Bed Number"] == int(bed_reset)] #select logs of patient to reset
                 send_old["Date First"] = pd.to_datetime(date_first).date()
                 send_old["Date Last"] = pd.to_datetime(date_last).date()
-                send_old.columns = ['bed_number', 'timestamp_start','timestamp_end','hfr_count','accompanied','date_first','date_last']
+                send_old.columns = ['bed_number', 'timestamp_start','timestamp_end','accompanied','hfr_count','date_first','date_last']
                 send_old.to_sql('discharged_patient_logs',conn,if_exists='append',index = False) #send to 
                 refresh_command = "DELETE FROM current_patient_logs WHERE bed_number={0}".format(int(bed_reset))
                 execute_query(conn, refresh_command)
@@ -87,23 +80,21 @@ def app():
             date_input = date_input.strftime('%d/%m/%Y')
             time_input = st.text_input(label= "Start Time in HH:MM:SS format")
             st.write("Updated Patient Data")
-            accompanied_new_input = st.checkbox('Accompanied')
             hfr_count_new_input = st.selectbox("HFR Count",("Alarm was Triggered","Alarm was not Triggered","Not Applicable"))
-            if accompanied_new_input: #convert user input into db input
-                accompanied_new = 1
-            else:
-                accompanied_new = 0
             if (hfr_count_new_input == "Alarm was Triggered"):
                 hfr_count_new = 1
+                accompanied_new = 0
             elif (hfr_count_new_input == "Alarm was not Triggered"):
                 hfr_count_new = 0
+                accompanied_new = 0
             elif (hfr_count_new_input == "Not Applicable"):
                 hfr_count_new = 'NULL'
+                accompanied_new = 1
             if st.form_submit_button(label='Edit'): #sql query executed when button is clicked
                 date_input = pd.to_datetime(date_input)
                 time_input = datetime.datetime.strptime(time_input,"%H:%M:%S").time()
                 datetime_input = datetime.datetime.combine(date_input, time_input)
-                edit_command = "UPDATE current_patient_logs SET accompanied = {0}, hfr_count = {1} WHERE bed_number = {2} AND timestamp_start = '{3}' ".format(int(accompanied_new), int(hfr_count_new), int(bed_edit), datetime_input)
+                edit_command = "UPDATE current_patient_logs SET accompanied = {0}, hfr_count = {1} WHERE bed_number = {2} AND timestamp_start = '{3}' ".format(int(accompanied_new), hfr_count_new, int(bed_edit), datetime_input)
                 execute_query(conn, edit_command)
                 
 
