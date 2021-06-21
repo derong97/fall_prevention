@@ -10,15 +10,8 @@ import mysql.connector
 from sqlalchemy import create_engine
 
 def app():
-    engine = create_engine("mysql+pymysql://raspberry:password123^@localhost/post_monitoring_db")
+    engine = create_engine("mysql+pymysql://rpi:password123^@localhost/post_monitoring_db")
     conn = engine.connect()
-    #conn = mysql.connector.connect(
-    #    host = "localhost",
-    #    port="3306",
-    #    user  = "raspberry",
-    #    password = "password123^",
-    #    database = "post_monitoring_db"
-    #)
 
     print(conn)
 
@@ -26,7 +19,7 @@ def app():
         with connection.connect() as connection:
             result = connection.execute(query)
             print("Query successful")
-
+        
 
     # page layout
     header = st.beta_container()
@@ -77,26 +70,26 @@ def app():
 
     with header: 
         st.title("Ward 37's Post-Toilet Visit Monitoring Visualisation")
-
+ 
 
     with hfr_count: 
-        st.header("Patients By Their High Fall Risk (HFR) Count Ratio for Every Unaccompanied Toilet Visit")
+        st.header("Patient’s High Fall Risk (HFR) Count Ratio")
         placeholder_hfr = st.empty()
-        description_hfr = placeholder_hfr.button("Description of HFR Count Ratio")  
+        description_hfr = placeholder_hfr.button("Description of HFR Count Ratio")
         if description_hfr:
-            placeholder_hfr.write("For every unaccompanied toilet visit, if a 'Come Now' alarm is triggered, it would result in a HFR Count of 1, else it would result in a HFR Count of 0. A HFR ratio is then calculated by taking the average HFR counts from all the unaccompanied toilet visits for the patients. For example, if the patient has recorded 3 unaccompanied toilet visits, and activates the 'Come Now' alarm 2 times, then the HFR Count ratio is 2/3 = 0.66")
+            placeholder_hfr.write("The average number of times the patient has triggered the High Fall Risk alert (i.e. by getting up/ standing) over all their unaccompanied toilet visits. For example, a patient records 3 unaccompanied toilet visits, and activates the High Fall Risk alarm 2 times. The HFR Count ratio is 2/3 = 0.66 .")
             if st.button("Close Description"):
                 placeholder_hfr.empty()
         hist_hfr_count = fig = px.bar(df_hfr_count, x='Bed Number', y='HFR Count Ratio')
-        hist_hfr_count.add_trace(go.Scatter(x=df_hfr_count['Bed Number'],y=[.5]*38,showlegend = False))
+        hist_hfr_count.add_trace(go.Scatter(x=df_hfr_count['Bed Number'],y=[.5]*38, showlegend = False))
         st.plotly_chart(hist_hfr_count,use_container_width=True)
 
     with frequency: 
-        st.header("Average Frequency of Toilet Use (Over a Week) for Every Hour in the Entire Ward")
+        st.header("Ward Hourly Average Toilet Use Frequency")
         placeholder_freq = st.empty()
         description_freq = placeholder_freq.button("Description of Average Toilet Use Frequency")
         if description_freq:
-            placeholder_freq.write("For every hour, the average frequency is calculated by taking the total number of toilet visits during that hour divided by the past 1 week based on the currently registered patients in the ward . For example, at 0900, if there were 21 toilet visits recorded over the past 1 week, the average frequency calculated as 21/7 = 3.")
+            placeholder_freq.write("The average number of toilet visits of all currently registered patients during that hour over the last 7 days. For example, 21 toilet visits was recorded at 0900 over the past week. Average frequency is 21/7 = 3.")
             if st.button("Close Description"):
                 placeholder_freq.empty()
         hist_hour_freq = fig = px.bar(df_hour_freq, x='Hour of the Day', y='Frequency',labels={'Hour of the Day':'Time of the Day (24h)'})
@@ -104,11 +97,11 @@ def app():
         st.plotly_chart(hist_hour_freq, use_container_width=True)
 
     with average_visits: 
-        st.header("Average Number of Toilet Visits Per Day For Each Patient")
+        st.header("Patient Daily Average Number of Toilet Visits ")
         placeholder_visit = st.empty()
         description_visit = placeholder_visit.button("Description of Average Toilet Visit")
         if description_visit:
-            placeholder_visit.write("For each patient, the average number of toilet visits is calculated by taking the number of toilet visits that the patient takes divided by the number of dates where the patient has recorded to have used the toilet. For example, if the patient is recorded to have visited the toilet 5 times on day 1 and 8 times on day 2, the average number of toilet visits calculated will be (8+5)/2 = 6.5")
+            placeholder_visit.write("The average number of times a patient visits the toilet for every day that a toilet visit is recorded. For example, the patient visited the toilet 5 and 8 times on day 1 and 6 respectively (with no toilet visits from day 2 to 5), the daily average number is (8+5)/2 = 6.5.")
             if st.button("Close Description"):
                 placeholder_visit.empty()
         hist_average_visits = fig = px.bar(df_average_visits, x='Bed Number', y='Frequency')
@@ -116,3 +109,4 @@ def app():
         st.plotly_chart(hist_average_visits,use_container_width=True)
 
     conn.close()
+
