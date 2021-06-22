@@ -36,7 +36,7 @@ def app():
     df_display = df_display.drop(columns=["Timestamp Start","Timestamp End"])
     df_display.columns = ["Bed Number", "Date", "Time Start","Time End","Accompanied","HFR Count"]
 
-    # calculating frequency of toilet use of entire ward
+    # calculating frequency of toilet visit of entire ward
     df_frequency = df_display.copy()
     df_frequency = df_frequency.iloc[:, 0:3]
     today_date = datetime.date.today() #get current date
@@ -47,7 +47,7 @@ def app():
     df_frequency['Frequency'] = 1
     df_frequency = df_frequency[["Date",'Hour of the Day',"Frequency"]]
     df_hour_freq = df_frequency.groupby(["Date",'Hour of the Day'],as_index=False).count() #group by time interval , count
-    df_hour_freq = df_hour_freq.groupby('Hour of the Day',as_index=False)["Frequency"].mean()  #mean number of times each patient uses the toilet each day
+    df_hour_freq = df_hour_freq.groupby('Hour of the Day',as_index=False)["Frequency"].mean()  #mean number of times each patient visits the toilet each day
     df_hour_freq.reset_index(inplace = True)
 
     # calculating number of toilet visits per day 
@@ -55,9 +55,9 @@ def app():
     df_average_visits = df_average_visits.iloc[:, 0:3]
     df_average_visits = df_average_visits.drop(columns = ["Time Start"])
     df_average_visits['Frequency'] = 1
-    df_average_visits = df_average_visits.groupby(["Date","Bed Number"],as_index=False).count() #count the number of times each patient uses the toilet for each day
+    df_average_visits = df_average_visits.groupby(["Date","Bed Number"],as_index=False).count() #count the number of times each patient visits the toilet for each day
     df_average_visits = df_average_visits.drop(columns = ["Date"])
-    df_average_visits = df_average_visits.groupby("Bed Number",as_index=False)["Frequency"].mean()  #mean number of times each patient uses the toilet each day
+    df_average_visits = df_average_visits.groupby("Bed Number",as_index=False)["Frequency"].mean()  #mean number of times each patient visits the toilet each day
     df_average_visits.sort_values("Frequency", inplace=True ,ascending=False,ignore_index=True)
 
     # calculating patients by the HFR counts
@@ -85,9 +85,9 @@ def app():
         st.plotly_chart(hist_hfr_count,use_container_width=True)
 
     with frequency: 
-        st.header("Ward Hourly Average Toilet Use Frequency")
+        st.header("Ward Hourly Average Toilet Visit Frequency")
         placeholder_freq = st.empty()
-        description_freq = placeholder_freq.button("Description of Average Toilet Use Frequency")
+        description_freq = placeholder_freq.button("Description of Average Toilet Visit Frequency")
         if description_freq:
             placeholder_freq.write("The average number of toilet visits of all currently registered patients during that hour over the last 7 days. For example, 21 toilet visits was recorded at 0900 over the past week. Average frequency is 21/7 = 3.")
             if st.button("Close Description"):
