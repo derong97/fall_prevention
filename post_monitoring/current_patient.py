@@ -34,7 +34,7 @@ def app():
     df_display = df_logs.copy()
     df_display.insert(1,"Date",pd.to_datetime(df_logs["Timestamp Start"]).dt.date)
     df_display.insert(2,"Time Start",pd.to_datetime(df_logs["Timestamp Start"]).dt.time)
-    df_display.insert(3,"Time End",pd.to_datetime(df_logs["Timestamp Start"]).dt.time)
+    df_display.insert(3,"Time End",pd.to_datetime(df_logs["Timestamp End"]).dt.time)
     df_display = df_display.drop(columns=["Timestamp Start","Timestamp End"])
     df_display.columns = ["Bed Number", "Date", "Time Start","Time End","Accompanied","HFR Count"]
     

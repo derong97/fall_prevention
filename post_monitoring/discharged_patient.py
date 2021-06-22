@@ -35,7 +35,7 @@ def app():
     discharged_display = discharged_logs.copy()
     discharged_display.insert(1,"Date",pd.to_datetime(discharged_logs["Timestamp Start"]).dt.date)
     discharged_display.insert(2,"Time Start",pd.to_datetime(discharged_logs["Timestamp Start"]).dt.time)
-    discharged_display.insert(3,"Time End",pd.to_datetime(discharged_logs["Timestamp Start"]).dt.time)
+    discharged_display.insert(3,"Time End",pd.to_datetime(discharged_logs["Timestamp End"]).dt.time)
     discharged_display["First Toilet Visit"]= pd.to_datetime(discharged_logs["First Toilet Visit"]).dt.date
     discharged_display["Last Toilet Visit"]= pd.to_datetime(discharged_logs["Last Toilet Visit"]).dt.date
     discharged_display = discharged_display.drop(columns=["Timestamp Start","Timestamp End"])

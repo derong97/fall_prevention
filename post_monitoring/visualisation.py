@@ -32,7 +32,7 @@ def app():
     df_display = df_logs.copy()
     df_display.insert(1,"Date",pd.to_datetime(df_logs["Timestamp Start"]).dt.date)
     df_display.insert(2,"Time Start",pd.to_datetime(df_logs["Timestamp Start"]).dt.time)
-    df_display.insert(3,"Time End",pd.to_datetime(df_logs["Timestamp Start"]).dt.time)
+    df_display.insert(3,"Time End",pd.to_datetime(df_logs["Timestamp End"]).dt.time)
     df_display = df_display.drop(columns=["Timestamp Start","Timestamp End"])
     df_display.columns = ["Bed Number", "Date", "Time Start","Time End","Accompanied","HFR Count"]
 
@@ -46,7 +46,7 @@ def app():
     df_frequency['Hour of the Day'] = df_frequency['Hour of the Day'].str[:3]+"00"
     df_frequency['Frequency'] = 1
     df_frequency = df_frequency[["Date",'Hour of the Day',"Frequency"]]
-    df_hour_freq = df_frequency.groupby(["Date",'Hour of the Day'],as_index=False).count() #group by time interval , count
+    df_hour_freq = df_frequency.groupby(["Date",'Hour of the Day'],as_index=False).count() #group by time interval, count
     df_hour_freq = df_hour_freq.groupby('Hour of the Day',as_index=False)["Frequency"].mean()  #mean number of times each patient visits the toilet each day
     df_hour_freq.reset_index(inplace = True)
 
