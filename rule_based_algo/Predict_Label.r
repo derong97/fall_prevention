@@ -3,15 +3,15 @@
 rm(list=ls())
 
 #Import the excel file
-data <- read.csv("C:\\Users\\Gan Yu\\Documents\\SUTD ESD Term 8 Learning Materials\\Capstone 2\\data_r_codes_2.csv")
+data <- read.csv("C:\\Users\\Gan Yu\\Documents\\SUTD ESD Term 8 Learning Materials\\Capstone 2\\data_r_codes_4.csv")
 
 #Create new columns
-data$sit_total <- rep(0,4912)
-data$bend_total <- rep(0,4912)
-data$stand_total <- rep(0,4912)
-data$tampered_total <- rep(0,4912)
-data$inaction_total <- rep(0,4912)
-data$predicted_label <- rep(0,4912)
+data$sit_total <- rep(0,nrow(data))
+data$bend_total <- rep(0,nrow(data))
+data$stand_total <- rep(0,nrow(data))
+data$tampered_total <- rep(0,nrow(data))
+data$inaction_total <- rep(0,nrow(data))
+data$predicted_label <- rep(0,nrow(data))
 
 #Set threshold values
 i <- 1
@@ -22,11 +22,8 @@ w_f_increase_bend_stand <- 149.2184482
 w_b_decrease_bend_stand <- -77.02051206
 w_f_decrease_sit <- -149.2184482
 w_b_increase_sit <- 77.02051206
-check <- rep(0,9)
-j <- 1
 
-
-while (data$expt_no[i] < 100)
+while (data$expt_no[i] < 30)
 {
   if (data$sit_probability[i] > max(data$bend_probability[i], data$stand_probability[i], data$tampered_probability[i], data$inaction_probability[i]))
   {
@@ -184,11 +181,4 @@ Accuracy <- sum(diag(table))/nrow(data)
 Accuracy
 
 #Export to Excel file
-write.table(data,file="Predict_Label",sep=",")
-
-
-
-
-
-
-
+write.table(data,file="Predict_Label.csv",sep=",")
