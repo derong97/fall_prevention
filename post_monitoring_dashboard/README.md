@@ -1,4 +1,4 @@
-﻿# fall-prevention-visualiaation
+﻿# fall-prevention-visualisation
 Data Analytics and Visualisation on StreamLit.
 
 
