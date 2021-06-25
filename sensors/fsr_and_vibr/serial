@@ -1,3 +1,9 @@
+/* 
+
+Need to install SimpleKalmanFilter Arduino Library by Denys Sene
+
+*/
+
 #include <SimpleKalmanFilter.h>
 
 const long SERIAL_REFRESH_TIME = 100;
