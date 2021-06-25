@@ -9,16 +9,16 @@ The live monitoring app is a way for the nurses to communicate with the rest of 
 ![Enter Bed Number Screen](/live_monitoring_app/images/enter_bed_number.png)
 
 ## 3. Notification Screen
-No Action Needed notification 
+### No Action Needed notification 
 ![No Action Needed](/live_monitoring_app/images/no_action_needed.png)
 
-Get Ready notification 
-![Get Ready](/main/live_monitoring_app/images/get_ready.png)
+### Get Ready notification 
+![Get Ready](/live_monitoring_app/images/get_ready.png)
 
-Come Now notification 
+### Come Now notification 
 ![Come Now](/live_monitoring_app/images/come_now.png)
 
-Fall notification
+### Fall notification
 ![Fall](/live_monitoring_app/images/fall.png)
 
 # Installation Guide on Raspberry Pi 4B
