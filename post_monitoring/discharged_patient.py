@@ -82,4 +82,4 @@ def app():
                 export_logs.to_csv('bed {0} toilet log {1}.csv'.format(int(bed_export),timestamp_export),index=False)
 
    
-    conn.close()
+    sql_conn.close()

@@ -12,13 +12,9 @@ from decouple import config
 def app():
     #connect database
     SQL_IP = config('SQL_IP')
-    print(SQL_IP)
     SQL_USER = config('SQL_USER')
-    print(SQL_USER)
     SQL_PW = config('SQL_PW')
-    print(SQL_PW)
     SQL_DB = config('SQL_DB')
-    print(SQL_DB)
 
     sql_engine = create_engine("mysql+pymysql://{}:{}@{}/{}".format(SQL_USER, SQL_PW, SQL_IP, SQL_DB))
     try:
@@ -56,7 +52,7 @@ def app():
     today_date = datetime.date.today() #get current date
     week_before =  today_date - datetime.timedelta(weeks=1) #get week before
     df_frequency = df_frequency[df_frequency["Date"] >= week_before] #keep only those dates in the past 7 days
-    df_frequency['Hour of the Day'] = df_frequency['Time Start'].astype(str)
+    df_frequency['Hour of the Day'] = df_frequency['Time Start'].astype("str")
     df_frequency['Hour of the Day'] = df_frequency['Hour of the Day'].str[:3]+"00"
     df_frequency['Frequency'] = 1
     df_frequency = df_frequency[["Date",'Hour of the Day',"Frequency"]]
@@ -72,7 +68,7 @@ def app():
     df_average_visits = df_average_visits.groupby(["Date","Bed Number"],as_index=False).count() #count the number of times each patient visits the toilet for each day
     df_average_visits = df_average_visits.drop(columns = ["Date"])
     df_average_visits = df_average_visits.groupby("Bed Number",as_index=False)["Frequency"].mean()  #mean number of times each patient visits the toilet each day
-    df_average_visits.sort_values("Frequency", inplace=True ,ascending=False)#,ignore_index=True)
+    df_average_visits.sort_values("Frequency", inplace=True ,ascending=False,ignore_index=True)
 
     # calculating patients by the HFR counts
     df_hfr_count = df_display[df_display["Accompanied"] == 0]
@@ -80,7 +76,7 @@ def app():
     df_hfr_count = df_hfr_count[["HFR Count"]]
     df_hfr_count.reset_index(inplace = True)
     df_hfr_count.columns = ["Bed Number", 'HFR Count Ratio']
-    df_hfr_count.sort_values('HFR Count Ratio', inplace=True ,ascending=False)#,ignore_index=True)
+    df_hfr_count.sort_values('HFR Count Ratio', inplace=True ,ascending=False,ignore_index=True)
 
     with header: 
         st.title("Ward 37's Post-Toilet Visit Monitoring Visualisation")
