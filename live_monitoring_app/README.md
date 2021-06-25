@@ -3,14 +3,14 @@
 The live monitoring app is a way for the nurses to communicate with the rest of the system. 
 
 ## 1. Home Screen
-![alt text](https://github.com/derong97/fall_prevention/tree/main/live_monitoring_app/images/home_screen.png)
+![Home Screen](https://github.com/derong97/fall_prevention/tree/main/live_monitoring_app/images/home_screen.png)
 
 ## 2. Enter bed number screen
-![alt text](https://github.com/derong97/fall_prevention/tree/main/live_monitoring_app/images/enter_bed_number.png)
+![Enter Bed Number Screen](https://github.com/derong97/fall_prevention/tree/main/live_monitoring_app/images/enter_bed_number.png)
 
 ## 3. Notification Screen
 No Action Needed notification 
-![alt text](https://github.com/derong97/fall_prevention/tree/main/live_monitoring_app/images/no_action_needed.png)
+![No Action Needed](https://github.com/derong97/fall_prevention/tree/main/live_monitoring_app/images/no_action_needed.png)
 
 Get Ready notification 
 ![alt text](https://github.com/derong97/fall_prevention/tree/main/live_monitoring_app/images/get_ready.png)
