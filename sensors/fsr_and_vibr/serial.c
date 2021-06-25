@@ -43,7 +43,6 @@ int bidet_temp_arr[interval];
 int tissue_temp_arr[interval];
 int idx = 0;
 
-
 int prev_value_bidet = 0;
 int prev_value_tissue = 0;
 
