@@ -1,7 +1,6 @@
 ﻿import visualisation
 import current_patient
 import discharged_patient
-
 import streamlit as st
 
 
