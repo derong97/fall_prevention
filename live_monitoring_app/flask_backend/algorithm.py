@@ -75,16 +75,6 @@ def startAlgo(bed_number, patient_accompanied):
     global runAlgo
     runAlgo = True
     
-#     while runAlgo:
-#         data.FALL_RISK_STATUS = "low"
-#         time.sleep(10)
-#         data.FALL_RISK_STATUS = "mod"
-#         time.sleep(10)
-#         data.FALL_RISK_STATUS = "high"
-#         time.sleep(10)
-#         data.FALL_RISK_STATUS = "fall" 
-#         time.sleep(10)
-
     label = '0'
     
     global last_serial_readings

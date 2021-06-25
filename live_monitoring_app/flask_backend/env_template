@@ -2,4 +2,3 @@ SQL_IP=192.168.86.23
 SQL_USER=raspberry
 SQL_PW=password
 SQL_DB=post_monitoring_db
-

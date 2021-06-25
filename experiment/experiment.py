@@ -11,15 +11,15 @@ import sys
 import os
 
 label = '0' 
-last_serial_readings = '0.0,0.0,0.0,0.0,0.0,0.0'
+last_serial_readings = '0.0,0.0,0.0,0.0,0,0'
 
 def scanning():
     """
-    Continuously scans for user input``
+    Continuously scans for user input
     """
     global label
     
-    label2action = {'0': 'sit', '1': 'get up', '2': 'stand', '3': 'inaction','4': 'tampered', '5':'preemptive'}
+    label2action = {'0': 'sitting', '1': 'standing', '3': 'fell'}
     while True:
         user_input = input()
         if user_input in label2action.keys():
