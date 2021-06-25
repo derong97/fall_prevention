@@ -58,10 +58,6 @@ while (data$expt_no[i] < 30)
       data$stand_total[i] <- data$stand_probability[i]*thermal_weight 
       data$tampered_total[i] <- data$tampered_probability[i]*thermal_weight
       data$inaction_total[i] <- data$inaction_probability[i]*thermal_weight
-      #if (data$v_bidet[i] > 0 | data$v_tissue[i] > 0)
-      #{
-      #data$predicted_label[i] <- 5
-      #}
     }
   }
   else if (data$bend_probability[i] > max(data$stand_probability[i], data$tampered_probability[i], data$inaction_probability[i]))
@@ -155,15 +151,6 @@ while (data$expt_no[i] < 30)
   else if (data$inaction_probability[i] > data$tampered_probability[i])
   {
     data$predicted_label[i] <- 3
-    # if (data$w_f_change[i] < w_f_decrease_inaction)
-    # {
-    #   data$sit_total[i] <- data$sit_probability[i]*thermal_weight
-    #   data$bend_total[i] <- data$bend_probability[i]*thermal_weight
-    #   data$stand_total[i] <- data$stand_probability[i]*thermal_weight
-    #   data$tampered_total[i] <- data$tampered_probability[i]*thermal_weight
-    #   data$inaction_total[i] <- data$inaction_probability[i]*thermal_weight+ weight_weight
-    #   data$predicted_label[i] <- 3
-    # }
   }
   else
   {
