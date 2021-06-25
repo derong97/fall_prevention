@@ -2,19 +2,21 @@
 Data Analytics and Visualisation on StreamLit.
 
 
-# Setup MySQL
+## Setup MySQL
+
 1. Install MySQL:
 https://dev.mysql.com/downloads/mysql/5.7.html
 2. Create the database and tables
 Run 'post_monitoring_db script.sql'
 Refer to posture_detection_logs_v3.csv for psuedo data created
-3. Create an account with the following permissions (change 'username' and 'password' to desired input) by running the following commands:
+3. Create an account with the following permissions (change 'username' and 'password' to desired input) by running the following commands on the root account:
 `CREATE USER 'username’@‘%’ IDENTIFIED BY 'password';`
 `GRANT ALL PRIVILEGES ON post_monitoring_db.* TO 'username’@‘%’ WITH GRANT OPTION;`
-`FLUSH PRIVILEGES`
+`FLUSH PRIVILEGES;`
 
 
-# Setup Streamlit
+## Setup Streamlit
+
 1. Clean Install Streamlit 
 use this link: https://docs.streamlit.io/en/stable/troubleshooting/clean-install.html
 2. Connect Interface to Database
@@ -25,7 +27,8 @@ Create a .env file. Copy and paste the required environment variables from env_t
 `streamlit run main_app.py`
 
 
-#Visualisation 
+## 1. Visualisation
+
 A Dashboard containing 3 different insights will be shown (visualisation.py)
 ![Visualisation](/post_monitoring_dashboard/images/visualisation.jpg)
 1. To edit the thresholds (red line) for:
@@ -36,10 +39,13 @@ A Dashboard containing 3 different insights will be shown (visualisation.py)
 Run the alternative user interface using `streamlit run main_app_v2.py`
 
 
-#Current Patient Log (current_patient.py)
+## 2. Current Patient Log (current_patient.py)
+
 User interface that displays the logs of currently admitted patients. Includes reset, export and edit features.
 ![Current Patient Log](/post_monitoring_dashboard/images/current.jpg)
 
-#Discharged Patient Log (discharged_patient.py)
+
+## 3. Discharged Patient Log (discharged_patient.py)
+
 User interface that displays the logs of discharged patients. Includes export feature.
 ![Discharged Patient Log](/post_monitoring_dashboard/images/discharged.jpg)
