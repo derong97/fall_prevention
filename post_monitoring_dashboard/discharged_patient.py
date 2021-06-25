@@ -35,11 +35,11 @@ def app():
     today_date = datetime.date.today() #get current date
     one_year_ago =  today_date - datetime.timedelta(weeks=52) #get one year ago
     remove_data = "DELETE FROM discharged_patient_logs WHERE date_last < '{0}'".format(one_year_ago)
-    execute_query(conn, remove_data)
+    execute_query(sql_conn, remove_data)
 
     # display logs
     discharged_ward_data = "SELECT * FROM discharged_patient_logs"
-    discharged_logs = pd.read_sql(discharged_ward_data, conn)
+    discharged_logs = pd.read_sql(discharged_ward_data, sql_conn)
     discharged_logs.columns = ["Bed Number", "Timestamp Start","Timestamp End","Accompanied","HFR Count","First Toilet Visit","Last Toilet Visit"]
     discharged_display = discharged_logs.copy()
     discharged_display.insert(1,"Date",pd.to_datetime(discharged_logs["Timestamp Start"]).dt.date)

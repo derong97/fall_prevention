@@ -38,7 +38,7 @@ def app():
     log_table_func, buffer_1, edit = st.beta_columns([1,1/20,1])
 
     current_patient_data = "SELECT * FROM current_patient_logs"
-    df_logs = pd.read_sql(current_patient_data, conn) # read from database
+    df_logs = pd.read_sql(current_patient_data, sql_conn) # read from database
     df_logs.columns = ["Bed Number", "Timestamp Start","Timestamp End","Accompanied","HFR Count"]
     df_display = df_logs.copy()
     df_display.insert(1,"Date",pd.to_datetime(df_logs["Timestamp Start"]).dt.date)
@@ -68,7 +68,7 @@ def app():
                 send_old.columns = ['bed_number', 'timestamp_start','timestamp_end','accompanied','hfr_count','date_first','date_last']
                 send_old.to_sql('discharged_patient_logs',conn,if_exists='append',index = False) #send to 
                 refresh_command = "DELETE FROM current_patient_logs WHERE bed_number={0}".format(int(bed_reset))
-                execute_query(conn, refresh_command)
+                execute_query(sql_conn, refresh_command)
             
         with st.form(key="export_bedno"): #export feature
             st.header("Export Bed Number") 
@@ -104,7 +104,7 @@ def app():
                     time_input = datetime.datetime.strptime(time_input,"%H:%M:%S").time()
                     datetime_input = datetime.datetime.combine(date_input, time_input)
                     get_old_command = "SELECT accompanied, hfr_count FROM current_patient_logs WHERE bed_number = {0} AND timestamp_start = '{1}' ".format(int(bed_edit), datetime_input)
-                    get_old = pd.read_sql(get_old_command, conn)
+                    get_old = pd.read_sql(get_old_command, sql_conn)
                     edit_command = "UPDATE current_patient_logs SET accompanied = {0}, hfr_count = {1} WHERE bed_number = {2} AND timestamp_start = '{3}' ".format(int(accompanied_new), hfr_count_new, int(bed_edit), datetime_input)
                 except:
                     st.error("Please enter a valid input")
