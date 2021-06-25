@@ -4,6 +4,7 @@ import discharged_patient
 
 import streamlit as st
 
+
 st.set_page_config(layout="wide") #fills the whole webpage instead of centre column
 header = st.beta_container()
 

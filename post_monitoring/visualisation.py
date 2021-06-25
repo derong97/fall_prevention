@@ -6,28 +6,42 @@ import matplotlib.pyplot as plt
 import datetime
 import plotly.graph_objects as go
 import mysql.connector
-
 from sqlalchemy import create_engine
+from decouple import config
 
 def app():
-    engine = create_engine("mysql+pymysql://rpi:password123^@localhost/post_monitoring_db")
-    conn = engine.connect()
+    #connect database
+    SQL_IP = config('SQL_IP')
+    print(SQL_IP)
+    SQL_USER = config('SQL_USER')
+    print(SQL_USER)
+    SQL_PW = config('SQL_PW')
+    print(SQL_PW)
+    SQL_DB = config('SQL_DB')
+    print(SQL_DB)
 
-    print(conn)
+    sql_engine = create_engine("mysql+pymysql://{}:{}@{}/{}".format(SQL_USER, SQL_PW, SQL_IP, SQL_DB))
+    try:
+        sql_conn = sql_engine.connect()
+    except:
+        print("Could not connect to SQL database. Make sure the SQL server is running.")
 
     def execute_query(connection, query):
         with connection.connect() as connection:
             result = connection.execute(query)
             print("Query successful")
-        
+
+    average_threshold = 3
+    hfr_threshold = .5
 
     # page layout
     header = st.beta_container()
     hfr_count = st.beta_container()   
     frequency, buffer_2, average_visits = st.beta_columns([1,1/20,1])
 
+    #display logs
     current_patient_data = "SELECT * FROM current_patient_logs"
-    df_logs = pd.read_sql(current_patient_data, conn) #read from database
+    df_logs = pd.read_sql(current_patient_data, sql_conn) #read from database
     df_logs.columns = ["Bed Number", "Timestamp Start","Timestamp End","Accompanied","HFR Count"]
     df_display = df_logs.copy()
     df_display.insert(1,"Date",pd.to_datetime(df_logs["Timestamp Start"]).dt.date)
@@ -81,7 +95,7 @@ def app():
             if st.button("Close Description"):
                 placeholder_hfr.empty()
         hist_hfr_count = fig = px.bar(df_hfr_count, x='Bed Number', y='HFR Count Ratio')
-        hist_hfr_count.add_trace(go.Scatter(x=df_hfr_count['Bed Number'],y=[.5]*38, showlegend = False))
+        hist_hfr_count.add_trace(go.Scatter(x=df_hfr_count['Bed Number'],y=[hfr_threshold]*38, showlegend = False))
         st.plotly_chart(hist_hfr_count,use_container_width=True)
 
     with frequency: 
@@ -105,7 +119,7 @@ def app():
             if st.button("Close Description"):
                 placeholder_visit.empty()
         hist_average_visits = fig = px.bar(df_average_visits, x='Bed Number', y='Frequency')
-        hist_average_visits.add_trace(go.Scatter(x=df_average_visits['Bed Number'],y=[3]*38,showlegend = False))
+        hist_average_visits.add_trace(go.Scatter(x=df_average_visits['Bed Number'],y=[average_threshold]*38,showlegend = False))
         st.plotly_chart(hist_average_visits,use_container_width=True)
 
     conn.close()

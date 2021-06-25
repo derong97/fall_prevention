@@ -8,12 +8,22 @@ import plotly.graph_objects as go
 import time
 import mysql.connector
 from sqlalchemy import create_engine
+from decouple import config
 
 def app():
-    engine = create_engine("mysql+pymysql://rpi:password123^@localhost/post_monitoring_db")
-    conn = engine.connect()
+    #connect database
+    SQL_IP = config('SQL_IP')
+    SQL_USER = config('SQL_USER')
+    SQL_PW = config('SQL_PW')
+    SQL_DB = config('SQL_DB')
 
-    print(conn)
+    sql_engine = create_engine("mysql+pymysql://{}:{}@{}/{}".format(SQL_USER, SQL_PW, SQL_IP, SQL_DB))
+
+    try:
+        sql_conn = sql_engine.connect()
+    except:
+        print("Could not connect to SQL database. Make sure the SQL server is running.")
+
 
     def execute_query(connection, query):
         with connection.connect() as connection:
@@ -21,9 +31,8 @@ def app():
             print("Query successful")
 
 
-    
+    #layout
     header = st.beta_container()
-
     hfr_count = st.beta_container()   
     frequency, buffer_2, average_visits = st.beta_columns([1,1/20,1])
     log_table_func, buffer_1, edit = st.beta_columns([1,1/20,1])
@@ -43,10 +52,9 @@ def app():
         st.title("Current Patient Log")
         
 
-    with log_table_func:
+    with log_table_func: #displays table of logs 
         st.dataframe(df_display)
-
-        with st.form(key="reset_bedno"):
+        with st.form(key="reset_bedno"): #reset feature
             st.header("Reset Bed Number") 
             bed_reset = st.selectbox('Bed Number to Reset',range(1,39))
             if st.form_submit_button(label='Reset'): #sql query executed when button is clicked
@@ -62,12 +70,12 @@ def app():
                 refresh_command = "DELETE FROM current_patient_logs WHERE bed_number={0}".format(int(bed_reset))
                 execute_query(conn, refresh_command)
             
-        with st.form(key="export_bedno"):
+        with st.form(key="export_bedno"): #export feature
             st.header("Export Bed Number") 
             bed_export = st.selectbox('Bed Number to Export',range(1,39))
             if st.form_submit_button(label='Export'): #sql query executed when button is clicked
                 now = datetime.datetime.now()
-                timestamp_export = now.strftime("%d %m %Y %H%M")
+                timestamp_export = now.strftime("%d %m %Y %H%M") #includes time of export 
                 export_logs = df_display[df_display["Bed Number"] == bed_export]
                 export_logs.to_csv('bed {0} toilet log {1}.csv'.format(int(bed_export),timestamp_export),index=False)
         
@@ -92,11 +100,15 @@ def app():
                 accompanied_new = 1
             if st.form_submit_button(label='Edit'): #sql query executed when button is clicked
                 date_input = pd.to_datetime(date_input)
-                time_input = datetime.datetime.strptime(time_input,"%H:%M:%S").time()
-                datetime_input = datetime.datetime.combine(date_input, time_input)
-                edit_command = "UPDATE current_patient_logs SET accompanied = {0}, hfr_count = {1} WHERE bed_number = {2} AND timestamp_start = '{3}' ".format(int(accompanied_new), hfr_count_new, int(bed_edit), datetime_input)
-                execute_query(conn, edit_command)
+                try:
+                    time_input = datetime.datetime.strptime(time_input,"%H:%M:%S").time()
+                    datetime_input = datetime.datetime.combine(date_input, time_input)
+                    get_old_command = "SELECT accompanied, hfr_count FROM current_patient_logs WHERE bed_number = {0} AND timestamp_start = '{1}' ".format(int(bed_edit), datetime_input)
+                    get_old = pd.read_sql(get_old_command, conn)
+                    edit_command = "UPDATE current_patient_logs SET accompanied = {0}, hfr_count = {1} WHERE bed_number = {2} AND timestamp_start = '{3}' ".format(int(accompanied_new), hfr_count_new, int(bed_edit), datetime_input)
+                except:
+                    st.error("Please enter a valid input")
                 
-
-
+                
+  
     conn.close()
