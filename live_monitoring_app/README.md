@@ -9,7 +9,7 @@ Make sure you are in the live_monitoring_app folder before completing this guide
 3. To install torch libraries, follow this guide: https://medium.com/analytics-vidhya/quick-setup-instructions-for-installing-pytorch-and-fastai-on-raspberry-pi-4-5ffbe45e0ae3
 4. Run this command to ensure that all other requirements are installed: `pip3 install -r requirements.txt`
 5. To use CV2 library, run this command: `sudo apt-get install libatlas-base-dev` (required for shared object libcblas.so.3 to work)
-6. Create a `.env` file. Copy and paste the required environment variables from env_template. 
+6. Create a `.env` file. Copy and paste the required environment variables from env_template, and insert the details of the private SQL database into that file. 
 
 ## Installing frontend dependencies 
 1. Navigate to the frontend folder `cd live_monitoring_frontend`
