@@ -12,5 +12,5 @@ Team Members:
 
 ## Problem Statement
 
-1. To automatically detect posture changes of high-fall-risk patients during independent toileting, so that nurses can intervene in a timely manner to prevent potential falls in ward toilets.
-2. To develop a post-monitoring platform that logs the toileting activities of every high-fall-risk patient and provides insights based on collected data, so that nurses can understand their patients’ needs and manage their own time better.
+1. To automatically detect posture changes of high fall risk patients during independent toileting, so that nurses can intervene in a timely manner to prevent potential falls in ward toilets.
+2. To develop a post-monitoring platform that logs the toileting activities of every high fall risk patient and provides insights based on collected data, so that nurses can understand their patients’ needs and manage their own time better.
